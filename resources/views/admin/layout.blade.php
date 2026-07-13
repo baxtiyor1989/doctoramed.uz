@@ -119,7 +119,7 @@
                                 </span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('front.home') }}"><i class="ri-global-line text-muted fs-16 align-middle me-1"></i> Saytga o‘tish</a>
+                                <a class="dropdown-item" href="{{ route('front.home') }}" target="_blank" rel="noopener noreferrer"><i class="ri-global-line text-muted fs-16 align-middle me-1"></i> Saytga o‘tish</a>
                                 <form method="POST" action="{{ route('admin.clear-cache') }}">
                                     @csrf
                                     <button type="submit" class="dropdown-item"><i class="ri-refresh-line text-muted fs-16 align-middle me-1"></i> Cache tozalash</button>
@@ -166,7 +166,7 @@
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.resumes.index') }}"><i class="ri-file-user-line"></i> <span>Rezyumelar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.users.index') }}"><i class="ri-user-settings-line"></i> <span>Foydalanuvchilar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.settings') }}"><i class="ri-settings-3-line"></i> <span>Asosiy sozlamalar</span></a></li>
-                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('front.home') }}"><i class="ri-global-line"></i> <span>Sayt</span></a></li>
+                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('front.home') }}" target="_blank" rel="noopener noreferrer"><i class="ri-global-line"></i> <span>Sayt</span></a></li>
                     </ul>
                 </div>
             </div>

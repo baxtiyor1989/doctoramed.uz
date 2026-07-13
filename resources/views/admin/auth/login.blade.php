@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
-                            <a href="{{ route('front.home') }}" class="d-inline-block auth-logo">
+                            <a href="{{ route('front.home') }}" class="d-inline-block auth-logo" target="_blank" rel="noopener noreferrer">
                                 <img src="{{ asset('front-assets/logo.png') }}" alt="Doctor A Med Clinic" height="58">
                             </a>
                             <p class="mt-3 fs-15 fw-medium">Doctor A Med Clinic boshqaruv paneli</p>

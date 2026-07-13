@@ -165,7 +165,7 @@
                 <div class="col-lg-4 text-lg-end">
                     <div class="fs-13 text-white-75 mb-2">Bugungi sana</div>
                     <div class="fs-4 fw-semibold">{{ now()->format('d.m.Y') }}</div>
-                    <a href="{{ route('front.home') }}" class="btn btn-light btn-sm mt-3">
+                    <a href="{{ route('front.home') }}" class="btn btn-light btn-sm mt-3" target="_blank" rel="noopener noreferrer">
                         <i class="ri-global-line align-middle me-1"></i> Saytga o‘tish
                     </a>
                 </div>
