@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslations;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,5 +18,30 @@ class AboutSlide extends Model
             'translations' => 'array',
             'is_active' => 'boolean',
         ];
+    }
+
+    protected function image(): Attribute
+    {
+        return Attribute::get(function (?string $value) {
+            if ($value === null || $value === '') {
+                return null;
+            }
+
+            if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                return $value;
+            }
+
+            $path = ltrim($value, '/');
+
+            if (! str_contains($path, '/')) {
+                $path = 'storage/about-slides/'.$path;
+            }
+
+            if (! str_starts_with($path, 'storage/')) {
+                $path = 'storage/'.$path;
+            }
+
+            return asset($path);
+        });
     }
 }
