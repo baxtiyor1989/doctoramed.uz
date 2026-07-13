@@ -17,6 +17,7 @@ use App\Models\Vacancy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -202,6 +203,13 @@ class ContentController extends Controller
         SiteSetting::current()->update($data);
 
         return back()->with('status', 'Sozlamalar saqlandi.');
+    }
+
+    public function clearCache(): RedirectResponse
+    {
+        Artisan::call('optimize:clear');
+
+        return back()->with('status', 'Cachelar tozalandi.');
     }
 
     public function index(string $resource): View

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ContentController;
@@ -12,6 +13,13 @@ use App\Http\Controllers\Admin\AppointmentApplicationController as AdminAppointm
 use App\Http\Controllers\Admin\ResumeApplicationController as AdminResumeApplicationController;
 
 Route::get('/', FrontController::class)->name('front.home');
+Route::get('/media/{path}', function (string $path) {
+    $path = ltrim($path, '/');
+
+    abort_unless(Storage::disk('public')->exists($path), 404);
+
+    return response()->file(Storage::disk('public')->path($path));
+})->where('path', '.*')->name('media.show');
 Route::get('/news', [FrontController::class, 'news'])->name('front.news');
 Route::get('/news/{article}', [FrontController::class, 'article'])->name('front.news.show');
 Route::get('/{locale}/news', [FrontController::class, 'localizedNews'])
@@ -36,6 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
         Route::get('/settings', [ContentController::class, 'settings'])->name('settings');
         Route::put('/settings', [ContentController::class, 'updateSettings'])->name('settings.update');
+        Route::post('/clear-cache', [ContentController::class, 'clearCache'])->name('clear-cache');
         Route::get('/resumes', [AdminResumeApplicationController::class, 'index'])->name('resumes.index');
         Route::delete('/resumes/{resume}', [AdminResumeApplicationController::class, 'destroy'])->name('resumes.destroy');
         Route::get('/appointments', [AdminAppointmentApplicationController::class, 'index'])->name('appointments.index');

@@ -34,14 +34,14 @@ class AboutSlide extends Model
             $path = ltrim($value, '/');
 
             if (! str_contains($path, '/')) {
-                $path = 'storage/about-slides/'.$path;
+                $path = 'about-slides/'.$path;
             }
 
-            if (! str_starts_with($path, 'storage/')) {
-                $path = 'storage/'.$path;
+            if (str_starts_with($path, 'storage/')) {
+                $path = substr($path, strlen('storage/'));
             }
 
-            return asset($path);
+            return route('media.show', ['path' => $path]);
         });
     }
 }

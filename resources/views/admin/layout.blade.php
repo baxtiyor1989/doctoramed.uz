@@ -120,6 +120,10 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="{{ route('front.home') }}"><i class="ri-global-line text-muted fs-16 align-middle me-1"></i> Saytga o‘tish</a>
+                                <form method="POST" action="{{ route('admin.clear-cache') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item"><i class="ri-refresh-line text-muted fs-16 align-middle me-1"></i> Cache tozalash</button>
+                                </form>
                                 <form method="POST" action="{{ route('admin.logout') }}">
                                     @csrf
                                     <button type="submit" class="dropdown-item"><i class="ri-logout-box-r-line text-muted fs-16 align-middle me-1"></i> Chiqish</button>
