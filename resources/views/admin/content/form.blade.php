@@ -81,7 +81,7 @@
                                         </label>
                                         <div class="uploaded-image-grid mt-3" data-upload-preview></div>
                                         @if ($item->{$name})
-                                            <div class="uploaded-image-grid mt-3">
+                                            <div class="uploaded-image-grid mt-3" data-existing-upload="{{ $name }}">
                                                 <label class="uploaded-image-card">
                                                     <img src="{{ $item->{$name} }}" alt="">
                                                     <span>
@@ -309,6 +309,8 @@
 
                 if (preview) {
                     preview.innerHTML = '';
+                    document.querySelector(`[data-existing-upload="${input.name}"]`)?.classList.add('d-none');
+
                     files.forEach((file) => {
                         if (!file.type.startsWith('image/')) return;
 
