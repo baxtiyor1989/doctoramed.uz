@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <title>Admin login | Doctor A Med Clinic</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ asset('admin-assets/assets/images/favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('front-assets/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('front-assets/logo.png') }}">
     <script src="{{ asset('admin-assets/assets/js/layout.js') }}"></script>
     <link href="{{ asset('admin-assets/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('admin-assets/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />

@@ -98,6 +98,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ $settings->tr('site_title', $locale) }}</title>
+  <link rel="icon" type="image/png" href="{{ asset('front-assets/logo.png') }}" />
+  <link rel="apple-touch-icon" href="{{ asset('front-assets/logo.png') }}" />
   <link rel="stylesheet" href="{{ asset('front-assets/style.css') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
