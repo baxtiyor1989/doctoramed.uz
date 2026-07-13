@@ -457,8 +457,12 @@ class ContentController extends Controller
         return $value;
     }
 
-    private function parseLines(string $value): array
+    private function parseLines(?string $value): array
     {
+        if ($value === null || trim($value) === '') {
+            return [];
+        }
+
         return collect(preg_split('/\r\n|\r|\n/', $value))
             ->map(fn (string $line) => trim($line))
             ->filter()
@@ -466,7 +470,7 @@ class ContentController extends Controller
             ->all();
     }
 
-    private function parsePairs(string $value, array $keys): array
+    private function parsePairs(?string $value, array $keys): array
     {
         return collect($this->parseLines($value))
             ->map(function (string $line) use ($keys) {
