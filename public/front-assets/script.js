@@ -57,9 +57,19 @@ document.querySelectorAll(".nav a[data-menu-id]").forEach((link) => {
     sessionStorage.setItem(serviceFilterKey, canFilterServices ? (link.dataset.menuId || "") : "");
     if (canFilterServices) {
       event.preventDefault();
+      const menuId = link.dataset.menuId || "";
+      const targetUrl = new URL(link.href, window.location.origin);
+      targetUrl.searchParams.set("service_menu", menuId);
+      targetUrl.hash = "services";
+
+      if (!servicesGrid) {
+        window.location.href = targetUrl.toString();
+        return;
+      }
+
       document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
       nav?.classList.remove("open");
-      loadServicesByMenu(link.dataset.menuId || "");
+      loadServicesByMenu(menuId);
       return;
     }
 
@@ -71,8 +81,13 @@ document.querySelectorAll(".nav a[data-menu-id]").forEach((link) => {
   });
 });
 
+const serviceMenuFromUrl = new URLSearchParams(window.location.search).get("service_menu");
+if (serviceMenuFromUrl) {
+  sessionStorage.setItem(serviceFilterKey, serviceMenuFromUrl);
+}
+
 if (window.location.hash === "#services") {
-  loadServicesByMenu(sessionStorage.getItem(serviceFilterKey));
+  loadServicesByMenu(serviceMenuFromUrl || sessionStorage.getItem(serviceFilterKey));
 }
 
 refreshServicesToggle();

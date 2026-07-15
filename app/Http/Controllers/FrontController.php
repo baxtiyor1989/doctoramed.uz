@@ -193,6 +193,10 @@ class FrontController extends Controller
             return $homeUrl.$url;
         }
 
+        if ($url === 'services' || str_starts_with($url, 'services?')) {
+            return $homeUrl.'#services';
+        }
+
         if ($url === '/news') {
             return $locale === 'uz' ? route('front.news') : route('front.locale.news', $locale);
         }
