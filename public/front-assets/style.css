@@ -2050,7 +2050,7 @@ a {
 }
 
 .article-shell {
-  max-width: 980px;
+  max-width: 1240px;
 }
 
 .article-back {
@@ -2070,7 +2070,7 @@ a {
 }
 
 .article-page h1 {
-  max-width: 880px;
+  max-width: 1080px;
   margin: 0 0 28px;
   color: #111827;
   font-size: clamp(34px, 5vw, 60px);
@@ -2079,8 +2079,9 @@ a {
 
 .article-main-image {
   width: 100%;
-  max-height: 520px;
+  height: clamp(420px, 48vw, 620px);
   object-fit: cover;
+  object-position: center;
   border-radius: 26px;
   box-shadow: 0 28px 70px rgba(24, 32, 56, .14);
 }
@@ -2112,13 +2113,15 @@ a {
 
 .article-gallery-thumb img {
   width: 100%;
-  height: 130px;
+  height: 150px;
   object-fit: cover;
+  object-position: center;
   display: block;
 }
 
 .article-content {
   margin-top: 34px;
+  max-width: 1120px;
   color: #3f4654;
   font-size: 18px;
   line-height: 1.8;
@@ -2719,6 +2722,11 @@ a {
   .news-page,
   .article-page {
     padding-top: 96px;
+  }
+
+  .article-main-image {
+    height: 280px;
+    border-radius: 18px;
   }
 
   .hero {
