@@ -9,6 +9,74 @@ document.querySelectorAll(".nav a").forEach((link) => {
   link.addEventListener("click", () => nav.classList.remove("open"));
 });
 
+document.querySelectorAll(".nav-submenu-toggle").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    button.closest(".has-submenu")?.classList.toggle("submenu-open");
+  });
+});
+
+const serviceFilterKey = "doctoramed-service-menu-filter";
+const servicesGrid = document.querySelector("[data-services-grid]");
+const servicesEmpty = document.querySelector("[data-services-empty]");
+const servicesToggle = document.querySelector("[data-services-toggle]");
+const servicesToggleWrap = document.querySelector("[data-services-toggle-wrap]");
+
+const refreshServicesToggle = () => {
+  const hiddenCards = servicesGrid?.querySelectorAll(".service-collapsed") || [];
+  if (servicesToggleWrap) servicesToggleWrap.hidden = hiddenCards.length === 0;
+  if (servicesToggle) servicesToggle.textContent = servicesToggle.dataset.defaultText || servicesToggle.textContent;
+  servicesGrid?.classList.remove("services-expanded");
+};
+
+const loadServicesByMenu = async (menuId) => {
+  if (!servicesGrid?.dataset.servicesFilterUrl) return;
+
+  servicesGrid.classList.add("loading");
+  try {
+    const url = new URL(servicesGrid.dataset.servicesFilterUrl, window.location.origin);
+    if (menuId) url.searchParams.set("menu_id", menuId);
+    const response = await fetch(url.toString(), {
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+    });
+    if (!response.ok) return;
+    const data = await response.json();
+    servicesGrid.innerHTML = data.html || "";
+    if (servicesEmpty) servicesEmpty.hidden = Number(data.count || 0) > 0;
+    bindServiceModalOpeners();
+    refreshServicesToggle();
+  } finally {
+    servicesGrid.classList.remove("loading");
+  }
+};
+
+document.querySelectorAll(".nav a[data-menu-id]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const canFilterServices = link.dataset.serviceFilterable === "1";
+    sessionStorage.setItem(serviceFilterKey, canFilterServices ? (link.dataset.menuId || "") : "");
+    if (canFilterServices) {
+      event.preventDefault();
+      document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
+      nav?.classList.remove("open");
+      loadServicesByMenu(link.dataset.menuId || "");
+      return;
+    }
+
+    if (link.href.includes("#services")) {
+      event.preventDefault();
+      document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
+      loadServicesByMenu("");
+    }
+  });
+});
+
+if (window.location.hash === "#services") {
+  loadServicesByMenu(sessionStorage.getItem(serviceFilterKey));
+}
+
+refreshServicesToggle();
+
 const languageDropdown = document.querySelector("[data-language-dropdown]");
 const languageButton = languageDropdown?.querySelector(".language-current");
 
@@ -176,48 +244,37 @@ videoItems.forEach((item) => {
   });
 });
 
-const servicesToggle = document.querySelector("[data-services-toggle]");
-const servicesMore = document.querySelector("[data-services-more]");
-
 servicesToggle?.addEventListener("click", () => {
-  const isExpanded = !servicesMore?.classList.contains("open");
-
-  if (isExpanded && servicesMore) {
-    servicesMore.classList.add("open");
-    servicesMore.style.maxHeight = `${servicesMore.scrollHeight}px`;
-  } else if (servicesMore) {
-    servicesMore.style.maxHeight = `${servicesMore.scrollHeight}px`;
-    servicesMore.offsetHeight;
-    servicesMore.classList.remove("open");
-    servicesMore.style.maxHeight = "0px";
-  }
-
+  const isExpanded = !servicesGrid?.classList.contains("services-expanded");
+  servicesGrid?.classList.toggle("services-expanded", isExpanded);
   servicesToggle.textContent = isExpanded
     ? servicesToggle.dataset.closeText || "Close"
     : servicesToggle.dataset.defaultText || servicesToggle.textContent;
 });
 
-window.addEventListener("resize", () => {
-  if (servicesMore?.classList.contains("open")) {
-    servicesMore.style.maxHeight = `${servicesMore.scrollHeight}px`;
-  }
-});
-
 const serviceModal = document.getElementById("serviceModal");
 const serviceModalTitle = document.getElementById("serviceModalTitle");
 const serviceModalText = document.getElementById("serviceModalText");
-const serviceOpenItems = document.querySelectorAll("[data-service-open]");
 const serviceCloseItems = document.querySelectorAll("[data-service-close]");
+const serviceAppointmentButton = document.querySelector("[data-service-appointment]");
+let selectedServiceForAppointment = "";
 
-serviceOpenItems.forEach((item) => {
-  item.addEventListener("click", () => {
-    if (serviceModalTitle) serviceModalTitle.textContent = item.dataset.serviceTitle || "";
-    if (serviceModalText) serviceModalText.textContent = item.dataset.serviceDescription || "";
-    serviceModal?.classList.add("open");
-    serviceModal?.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
+const bindServiceModalOpeners = () => {
+  document.querySelectorAll("[data-service-open]").forEach((item) => {
+    if (item.dataset.serviceBound === "1") return;
+    item.dataset.serviceBound = "1";
+    item.addEventListener("click", () => {
+      if (serviceModalTitle) serviceModalTitle.textContent = item.dataset.serviceTitle || "";
+      if (serviceModalText) serviceModalText.textContent = item.dataset.serviceDescription || "";
+      selectedServiceForAppointment = item.dataset.serviceTitle || "";
+      serviceModal?.classList.add("open");
+      serviceModal?.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    });
   });
-});
+};
+
+bindServiceModalOpeners();
 
 serviceCloseItems.forEach((item) => {
   item.addEventListener("click", () => {
@@ -240,8 +297,31 @@ const openAppointmentModal = () => {
   document.body.style.overflow = "hidden";
 };
 
+const setAppointmentType = (value) => {
+  const select = document.querySelector("[data-appointment-type-select]");
+  if (!select || !value) return;
+
+  const hasOption = Array.from(select.options).some((option) => option.value === value);
+  if (!hasOption) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  }
+
+  select.value = value;
+  select.dispatchEvent(new Event("change", { bubbles: true }));
+};
+
 appointmentOpenItems.forEach((item) => {
   item.addEventListener("click", openAppointmentModal);
+});
+
+serviceAppointmentButton?.addEventListener("click", () => {
+  setAppointmentType(selectedServiceForAppointment);
+  serviceModal?.classList.remove("open");
+  serviceModal?.setAttribute("aria-hidden", "true");
+  openAppointmentModal();
 });
 
 appointmentCloseItems.forEach((item) => {
@@ -289,6 +369,8 @@ document.querySelectorAll(".resume-select-wrap select").forEach((select) => {
   const setTriggerText = () => {
     trigger.textContent = select.options[select.selectedIndex]?.text || select.options[0]?.text || "";
   };
+
+  select.addEventListener("change", setTriggerText);
 
   const positionMenu = () => {
     const rect = trigger.getBoundingClientRect();

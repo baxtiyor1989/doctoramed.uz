@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AppointmentApplicationController as AdminAppointm
 use App\Http\Controllers\Admin\ResumeApplicationController as AdminResumeApplicationController;
 
 Route::get('/', FrontController::class)->name('front.home');
+Route::get('/services/filter', [FrontController::class, 'filterServices'])->name('front.services.filter');
 Route::get('/media/{path}', function (string $path) {
     $path = ltrim($path, '/');
 
@@ -28,6 +29,9 @@ Route::get('/{locale}/news', [FrontController::class, 'localizedNews'])
 Route::get('/{locale}/news/{article}', [FrontController::class, 'localizedArticle'])
     ->whereIn('locale', ['uz', 'ru', 'en'])
     ->name('front.locale.news.show');
+Route::get('/{locale}/services/filter', [FrontController::class, 'localizedFilterServices'])
+    ->whereIn('locale', ['uz', 'ru', 'en'])
+    ->name('front.locale.services.filter');
 Route::get('/{locale}', FrontController::class)
     ->whereIn('locale', ['uz', 'ru', 'en'])
     ->name('front.locale');
@@ -37,6 +41,7 @@ Route::post('/appointment-applications', [AppointmentApplicationController::clas
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+        Route::get('/captcha', [AuthController::class, 'captcha'])->name('captcha');
         Route::post('/login', [AuthController::class, 'login'])->name('login.store');
     });
 

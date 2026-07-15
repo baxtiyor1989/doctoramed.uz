@@ -11,6 +11,41 @@
     <link href="{{ asset('admin-assets/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('admin-assets/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('admin-assets/assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .captcha-box {
+            display: grid;
+            grid-template-columns: 1fr 46px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .captcha-image {
+            width: 100%;
+            height: 58px;
+            object-fit: cover;
+            border: 1px solid rgba(183, 33, 45, .18);
+            border-radius: 12px;
+            background: #fff7f8;
+        }
+
+        .captcha-refresh {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 12px;
+            background: rgba(183, 33, 45, .1);
+            color: #b7212d;
+            font-size: 20px;
+            transition: .2s ease;
+        }
+
+        .captcha-refresh:hover {
+            background: #b7212d;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <div class="auth-page-wrapper pt-5">
@@ -68,6 +103,20 @@
                                             </div>
                                         </div>
 
+                                        <div class="mb-3">
+                                            <label class="form-label" for="captcha">Rasmdagi kod</label>
+                                            <div class="captcha-box mb-2">
+                                                <img class="captcha-image" src="{{ route('admin.captcha') }}" alt="Captcha" id="captchaImage">
+                                                <button class="captcha-refresh" type="button" id="captchaRefresh" aria-label="Captcha yangilash">
+                                                    <i class="ri-refresh-line"></i>
+                                                </button>
+                                            </div>
+                                            <input type="text" class="form-control @error('captcha') is-invalid @enderror" id="captcha" name="captcha" placeholder="Rasmdagi kodni kiriting" autocomplete="off" required>
+                                            @error('captcha')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" value="1" id="auth-remember-check" name="remember">
                                             <label class="form-check-label" for="auth-remember-check">Eslab qolish</label>
@@ -103,5 +152,14 @@
     <script src="{{ asset('admin-assets/assets/libs/particles.js/particles.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/js/pages/particles.app.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/js/pages/password-addon.init.js') }}"></script>
+    <script>
+        const captchaImage = document.getElementById('captchaImage');
+        const captchaRefresh = document.getElementById('captchaRefresh');
+
+        captchaRefresh?.addEventListener('click', () => {
+            captchaImage.src = '{{ route('admin.captcha') }}?t=' + Date.now();
+            document.getElementById('captcha')?.focus();
+        });
+    </script>
 </body>
 </html>

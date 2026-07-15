@@ -413,6 +413,14 @@ a {
   font-weight: 700;
 }
 
+.nav-item {
+  position: relative;
+}
+
+.nav-submenu-toggle {
+  display: none;
+}
+
 .nav a {
   position: relative;
   color: #172033;
@@ -432,6 +440,85 @@ a {
 .nav a:hover::after,
 .nav a.active::after {
   width: 100%;
+}
+
+.has-submenu > a {
+  padding-right: 16px;
+}
+
+.has-submenu > a::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-65%) rotate(45deg);
+  opacity: .65;
+}
+
+.submenu {
+  position: absolute;
+  top: calc(100% + 18px);
+  left: -18px;
+  min-width: 210px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  border: 1px solid rgba(183, 33, 45, .12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(24, 32, 56, .13);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: .2s ease;
+  z-index: 60;
+}
+
+.submenu .nav-item {
+  position: relative;
+  display: block;
+}
+
+.submenu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 10px;
+  border-radius: 10px;
+  color: #172033;
+  white-space: nowrap;
+}
+
+.submenu a::after {
+  display: none;
+}
+
+.submenu .has-submenu > a::before {
+  display: block;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.submenu a:hover {
+  background: rgba(183, 33, 45, .08);
+  color: var(--primary);
+}
+
+.submenu .submenu {
+  top: 0;
+  left: calc(100% + 8px);
+  margin-top: 0;
+}
+
+.has-submenu:hover > .submenu,
+.has-submenu.submenu-open > .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .header-actions {
@@ -1257,6 +1344,19 @@ a {
   gap: 22px;
 }
 
+.services-grid.loading {
+  opacity: .55;
+  pointer-events: none;
+}
+
+.services-grid .service-card.service-collapsed {
+  display: none;
+}
+
+.services-grid.services-expanded .service-card.service-collapsed {
+  display: flex;
+}
+
 .service-card,
 .doctor-card,
 .news-card {
@@ -1286,6 +1386,17 @@ a {
   opacity: 1;
   margin-top: 22px;
   transform: translateY(0);
+}
+
+.services-filter-empty {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px dashed rgba(183, 33, 45, .24);
+  border-radius: 16px;
+  background: rgba(183, 33, 45, .05);
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
 }
 
 .service-card:hover,
@@ -2355,6 +2466,78 @@ a {
     display: none;
   }
 
+  .nav-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 36px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav a {
+    display: inline-flex;
+  }
+
+  .has-submenu > a::before {
+    display: none;
+  }
+
+  .nav-submenu-toggle {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(183, 33, 45, .08);
+    color: var(--primary);
+    cursor: pointer;
+  }
+
+  .nav-submenu-toggle span {
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: .2s ease;
+  }
+
+  .submenu-open > .nav-submenu-toggle span {
+    transform: translateY(2px) rotate(225deg);
+  }
+
+  .submenu {
+    position: static;
+    min-width: 0;
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    grid-column: 1 / -1;
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+    transform: none;
+    box-shadow: none;
+    background: rgba(183, 33, 45, .05);
+  }
+
+  .submenu-open > .submenu {
+    display: grid;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .submenu .submenu {
+    margin-left: 12px;
+    width: calc(100% - 12px);
+  }
+
+  .submenu a {
+    display: flex;
+    white-space: normal;
+  }
+
   .nav.open {
     display: flex;
   }
@@ -2756,6 +2939,10 @@ a {
   color: var(--muted);
   font-size: 16px;
   line-height: 1.8;
+}
+
+.service-appointment-btn {
+  margin-top: 20px;
 }
 
 .resume-modal {

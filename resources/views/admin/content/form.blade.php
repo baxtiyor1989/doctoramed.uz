@@ -113,6 +113,12 @@
                                                 @endforeach
                                             </div>
                                         @endif
+                                    @elseif ($field['type'] === 'select')
+                                        <select class="form-select @error($name) is-invalid @enderror" id="{{ $name }}" name="{{ $name }}">
+                                            @foreach (($field['options'] ?? []) as $optionValue => $optionLabel)
+                                                <option value="{{ $optionValue }}" @selected((string) old($name, $item->{$name}) === (string) $optionValue)>{{ $optionLabel }}</option>
+                                            @endforeach
+                                        </select>
                                     @else
                                         @php
                                             $inputValue = $field['type'] === 'date'

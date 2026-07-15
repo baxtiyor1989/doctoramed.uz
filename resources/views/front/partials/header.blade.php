@@ -13,12 +13,7 @@
 
     @php($homeUrl = $locale === 'uz' ? route('front.home') : route('front.locale', $locale))
     <nav class="nav" id="nav">
-      <a href="{{ $homeUrl }}#home">{{ $ui['home'] }}</a>
-      <a href="{{ $homeUrl }}#services">{{ $ui['services'] }}</a>
-      <a href="{{ $homeUrl }}#doctors">{{ $ui['doctors'] }}</a>
-      <a href="{{ $homeUrl }}#about">{{ $ui['about'] }}</a>
-      <a class="active" href="{{ $locale === 'uz' ? route('front.news') : route('front.locale.news', $locale) }}">{{ $ui['news'] }}</a>
-      <a href="{{ $homeUrl }}#contact">{{ $ui['contact'] }}</a>
+      @include('front.partials.menu-items', ['menus' => $frontMenus, 'activeUrl' => '/news'])
     </nav>
 
     <div class="header-actions">

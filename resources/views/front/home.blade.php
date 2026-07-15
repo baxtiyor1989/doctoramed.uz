@@ -126,12 +126,7 @@
       </a>
 
       <nav class="nav" id="nav">
-        <a class="active" href="#home">{{ $ui['home'] }}</a>
-        <a href="#services">{{ $ui['services'] }}</a>
-        <a href="#doctors">{{ $ui['doctors'] }}</a>
-        <a href="#about">{{ $ui['about'] }}</a>
-        <a href="#news">{{ $ui['news'] }}</a>
-        <a href="#contact">{{ $ui['contact'] }}</a>
+        @include('front.partials.menu-items', ['menus' => $frontMenus, 'activeUrl' => '#home'])
       </nav>
 
       <div class="header-actions">
@@ -267,50 +262,16 @@
           <p>{{ $settings->tr('services_text', $locale) }}</p>
         </div>
 
-        <div class="services-grid">
-          @foreach ($services as $service)
-            @continue($loop->index >= 5)
-            <article class="service-card reveal">
-              <div class="icon">{{ $service->icon }}</div>
-              <h3>{{ $service->tr('title', $locale) }}</h3>
-              <p>{{ $service->tr('description', $locale) }}</p>
-              <button
-                type="button"
-                class="service-detail-link"
-                data-service-open
-                data-service-title="{{ $service->tr('title', $locale) }}"
-                data-service-description="{{ $service->tr('description', $locale) }}">
-                {{ $ui['details'] }} →
-              </button>
-            </article>
-          @endforeach
+        <div
+          class="services-grid"
+          data-services-grid
+          data-services-filter-url="{{ $locale === 'uz' ? route('front.services.filter') : route('front.locale.services.filter', $locale) }}">
+          @include('front.partials.service-cards', ['services' => $services, 'locale' => $locale, 'detailsText' => $ui['details']])
         </div>
-
-        @if ($services->count() > 5)
-          <div class="services-more" data-services-more>
-            <div class="services-grid">
-              @foreach ($services->skip(5) as $service)
-                <article class="service-card reveal visible">
-                  <div class="icon">{{ $service->icon }}</div>
-                  <h3>{{ $service->tr('title', $locale) }}</h3>
-                  <p>{{ $service->tr('description', $locale) }}</p>
-                  <button
-                    type="button"
-                    class="service-detail-link"
-                    data-service-open
-                    data-service-title="{{ $service->tr('title', $locale) }}"
-                    data-service-description="{{ $service->tr('description', $locale) }}">
-                    {{ $ui['details'] }} →
-                  </button>
-                </article>
-              @endforeach
-            </div>
-          </div>
-
-          <div class="center reveal">
-            <button type="button" class="btn btn-primary services-toggle-btn" data-services-toggle data-default-text="{{ $ui['all_services'] }}" data-close-text="{{ $ui['hide'] }}">{{ $ui['all_services'] }}</button>
-          </div>
-        @endif
+        <div class="services-filter-empty" data-services-empty hidden>Bu menu bo‘yicha xizmatlar topilmadi.</div>
+        <div class="center reveal" data-services-toggle-wrap @if($services->count() <= 5) hidden @endif>
+          <button type="button" class="btn btn-primary services-toggle-btn" data-services-toggle data-default-text="{{ $ui['all_services'] }}" data-close-text="{{ $ui['hide'] }}">{{ $ui['all_services'] }}</button>
+        </div>
       </div>
     </section>
 
@@ -556,6 +517,9 @@
       <span class="tag">{{ $ui['services'] }}</span>
       <h3 id="serviceModalTitle"></h3>
       <p id="serviceModalText"></p>
+      <button type="button" class="btn btn-primary service-appointment-btn" data-service-appointment>
+        {{ $ui['appointment'] }}
+      </button>
     </div>
   </div>
 
@@ -595,7 +559,7 @@
         <label class="resume-form-wide">
           <span>{{ $ui['appointment_type'] }}</span>
           <span class="resume-select-wrap">
-            <select name="appointment_type" required>
+            <select name="appointment_type" required data-appointment-type-select>
               <option value="">{{ $ui['appointment_type_placeholder'] }}</option>
               @foreach ($appointmentTypes as $appointmentType)
                 @php($appointmentTypeTitle = $appointmentType->tr('title', $locale))

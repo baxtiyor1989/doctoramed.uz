@@ -9,6 +9,7 @@ use App\Models\AppointmentType;
 use App\Models\Branch;
 use App\Models\Doctor;
 use App\Models\HeroVideo;
+use App\Models\MenuItem;
 use App\Models\Partner;
 use App\Models\Service;
 use App\Models\SiteSetting;
@@ -32,6 +33,7 @@ class ContentController extends Controller
             'model' => Service::class,
             'fields' => [
                 'icon' => ['label' => 'Ikonka', 'type' => 'text'],
+                'menu_item_id' => ['label' => 'Qaysi menuga mansub', 'type' => 'select', 'options' => []],
                 'title' => ['label' => 'Nomi', 'type' => 'text', 'required' => true, 'translatable' => true],
                 'description' => ['label' => 'Tavsif', 'type' => 'textarea', 'translatable' => true],
                 'sort_order' => ['label' => 'Tartib', 'type' => 'number'],
@@ -135,6 +137,17 @@ class ContentController extends Controller
                 'is_active' => ['label' => 'Faol', 'type' => 'checkbox'],
             ],
         ],
+        'menus' => [
+            'title' => 'Front menyular',
+            'model' => MenuItem::class,
+            'fields' => [
+                'parent_id' => ['label' => 'Parent menu', 'type' => 'select', 'options' => []],
+                'title' => ['label' => 'Menu nomi', 'type' => 'text', 'required' => true, 'translatable' => true],
+                'url' => ['label' => 'Havola (#services, /news yoki https://...)', 'type' => 'text', 'required' => true],
+                'sort_order' => ['label' => 'Tartib', 'type' => 'number'],
+                'is_active' => ['label' => 'Faol', 'type' => 'checkbox'],
+            ],
+        ],
     ];
 
     public function settings(): View
@@ -215,7 +228,24 @@ class ContentController extends Controller
     public function index(string $resource): View
     {
         $config = $this->resource($resource);
-        $items = $config['model']::query()->orderBy('sort_order')->orderBy('id')->get();
+        $query = $config['model']::query()->orderBy('sort_order')->orderBy('id');
+
+        if ($resource === 'menus') {
+            $items = MenuItem::query()
+                ->whereNull('parent_id')
+                ->with('childrenRecursive')
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get();
+
+            return view('admin.content.index', compact('resource', 'config', 'items'));
+        }
+
+        if ($resource === 'services') {
+            $query->with('menuItem');
+        }
+
+        $items = $query->get();
 
         return view('admin.content.index', compact('resource', 'config', 'items'));
     }
@@ -233,7 +263,8 @@ class ContentController extends Controller
     public function store(Request $request, string $resource): RedirectResponse
     {
         $config = $this->resource($resource);
-        $config['model']::create($this->validatedData($request, $config, $resource));
+        $data = $this->validatedData($request, $config, $resource);
+        $config['model']::create($data);
 
         return redirect()->route('admin.content.index', $resource)->with('status', 'Ma’lumot qo‘shildi.');
     }
@@ -252,7 +283,16 @@ class ContentController extends Controller
     {
         $config = $this->resource($resource);
         $item = $config['model']::findOrFail($id);
-        $item->update($this->validatedData($request, $config, $resource));
+        $data = $this->validatedData($request, $config, $resource);
+
+        if ($resource === 'menus') {
+            $parentId = (int) ($data['parent_id'] ?? 0);
+            if ($parentId === $item->id || $this->descendantMenuIds($item->id)->contains($parentId)) {
+                $data['parent_id'] = null;
+            }
+        }
+
+        $item->update($data);
 
         return redirect()->route('admin.content.index', $resource)->with('status', 'Ma’lumot yangilandi.');
     }
@@ -269,7 +309,60 @@ class ContentController extends Controller
     {
         abort_unless(isset($this->resources[$resource]), 404);
 
-        return $this->resources[$resource];
+        $config = $this->resources[$resource];
+
+        if ($resource === 'menus') {
+            $menuOptions = MenuItem::query()
+                ->whereNull('parent_id')
+                ->with('childrenRecursive')
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get();
+
+            $config['fields']['parent_id']['options'] = ['' => 'Parent yo‘q'] + $this->menuParentOptions($menuOptions);
+        }
+
+        if ($resource === 'services') {
+            $menuOptions = MenuItem::query()
+                ->whereNull('parent_id')
+                ->with('childrenRecursive')
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get();
+
+            $config['fields']['menu_item_id']['options'] = ['' => 'Menu tanlanmagan'] + $this->menuParentOptions($menuOptions);
+        }
+
+        return $config;
+    }
+
+    private function menuParentOptions($menus, int $level = 0)
+    {
+        $options = [];
+
+        foreach ($menus as $menu) {
+            $options[$menu->id] = str_repeat('— ', $level).$menu->title;
+            $options += $this->menuParentOptions($menu->childrenRecursive, $level + 1);
+        }
+
+        return $options;
+    }
+
+    private function descendantMenuIds(int $menuId)
+    {
+        $ids = collect();
+        $current = collect([$menuId]);
+
+        while ($current->isNotEmpty()) {
+            $children = MenuItem::query()
+                ->whereIn('parent_id', $current)
+                ->pluck('id');
+
+            $ids = $ids->merge($children);
+            $current = $children;
+        }
+
+        return $ids;
     }
 
     private function validatedData(Request $request, array $config, string $resource): array
@@ -293,6 +386,7 @@ class ContentController extends Controller
                 'checkbox' => ['nullable', 'boolean'],
                 'file' => ['nullable', 'image', 'max:2048'],
                 'multi_file' => ['nullable', 'array'],
+                'select' => ['nullable'],
                 'number' => ['nullable', 'integer', 'min:0'],
                 'date' => ['nullable', 'date'],
                 default => [($field['required'] ?? false) ? 'required' : 'nullable', 'string'],
@@ -314,6 +408,10 @@ class ContentController extends Controller
         foreach ($config['fields'] as $name => $field) {
             if ($field['type'] === 'checkbox') {
                 $data[$name] = $request->boolean($name);
+            }
+
+            if ($field['type'] === 'select') {
+                $data[$name] = filled($data[$name] ?? null) ? $data[$name] : null;
             }
 
             if ($field['type'] === 'file') {
