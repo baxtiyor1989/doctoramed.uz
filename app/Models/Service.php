@@ -54,7 +54,7 @@ class Service extends Model
                 $path = substr($path, strlen('storage/'));
             }
 
-            return '/storage/'.$path;
+            return '/media/'.$path;
         });
     }
 }
