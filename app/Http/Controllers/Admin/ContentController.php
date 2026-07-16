@@ -32,7 +32,7 @@ class ContentController extends Controller
             'title' => 'Xizmatlar',
             'model' => Service::class,
             'fields' => [
-                'icon' => ['label' => 'Ikonka', 'type' => 'text'],
+                'icon' => ['label' => 'Ikonka PNG yuklash', 'type' => 'file', 'accept' => 'image/png,image/*'],
                 'menu_item_id' => ['label' => 'Qaysi menuga mansub', 'type' => 'select', 'options' => []],
                 'title' => ['label' => 'Nomi', 'type' => 'text', 'required' => true, 'translatable' => true],
                 'description' => ['label' => 'Tavsif', 'type' => 'textarea', 'translatable' => true],

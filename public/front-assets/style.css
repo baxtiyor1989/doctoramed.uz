@@ -1418,6 +1418,12 @@ a {
   margin-bottom: 24px;
 }
 
+.service-icon img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
 .service-card h3 {
   font-size: 18px;
   margin-bottom: 10px;
