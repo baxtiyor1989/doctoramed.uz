@@ -151,7 +151,21 @@
       <div class="container hero-grid">
         <div class="hero-content reveal">
           <span class="eyebrow">{{ $settings->tr('hero_eyebrow', $locale) }}</span>
-          <h1>{{ $settings->tr('hero_title', $locale) }} <span>{{ $settings->tr('hero_highlight', $locale) }}</span></h1>
+          @php
+            $heroTitle = $settings->tr('hero_title', $locale);
+            $heroTitleParts = explode(',', $heroTitle, 2);
+            $heroTitleLead = trim($heroTitleParts[0]).(str_contains($heroTitle, ',') ? ',' : '');
+            $heroTitleAfterComma = trim($heroTitleParts[1] ?? '');
+          @endphp
+          <h1>
+            <span class="hero-title-lead">{{ $heroTitleLead }}</span>
+            <span class="hero-title-second">
+              @if ($heroTitleAfterComma)
+                <span class="hero-title-rest">{{ $heroTitleAfterComma }}</span>
+              @endif
+              <span class="hero-title-highlight">{{ $settings->tr('hero_highlight', $locale) }}</span>
+            </span>
+          </h1>
           <p>{{ $settings->tr('hero_text', $locale) }}</p>
 
           <div class="hero-buttons">
