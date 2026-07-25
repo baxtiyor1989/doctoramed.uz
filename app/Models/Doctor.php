@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Concerns\HasTranslations;
 
@@ -17,5 +18,30 @@ class Doctor extends Model
             'translations' => 'array',
             'is_active' => 'boolean',
         ];
+    }
+
+    protected function image(): Attribute
+    {
+        return Attribute::get(function (?string $value) {
+            if ($value === null || $value === '') {
+                return null;
+            }
+
+            if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                return $value;
+            }
+
+            $path = ltrim($value, '/');
+
+            if (! str_contains($path, '/')) {
+                $path = 'doctors/'.$path;
+            }
+
+            if (str_starts_with($path, 'storage/')) {
+                $path = substr($path, strlen('storage/'));
+            }
+
+            return route('media.show', ['path' => $path]);
+        });
     }
 }

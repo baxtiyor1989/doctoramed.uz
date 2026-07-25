@@ -283,6 +283,11 @@
             <div @class(['about-slide', 'active' => $loop->first])>
               @if ($slide->image)
                 <div class="about-image">
+                  <div class="about-image-art" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <i></i>
+                  </div>
                   <img src="{{ $slide->image }}" alt="{{ $slide->tr('title', $locale) }}">
                 </div>
               @endif
@@ -303,6 +308,11 @@
             <div class="about-slide active">
               @if ($settings->about_image)
                 <div class="about-image">
+                  <div class="about-image-art" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <i></i>
+                  </div>
                   <img src="{{ $settings->about_image }}" alt="{{ $settings->tr('about_title', $locale) }}">
                 </div>
               @endif
@@ -326,7 +336,12 @@
       </div>
     </section>
 
-    <section class="section" id="doctors">
+    <section class="section doctors-section" id="doctors">
+      <div class="doctors-art" aria-hidden="true">
+        <span class="doctors-art-line doctors-art-line-one"></span>
+        <span class="doctors-art-line doctors-art-line-two"></span>
+        <span class="doctors-art-cross"></span>
+      </div>
       <div class="container">
         <div class="section-head reveal">
           <span>{{ $settings->tr('doctors_subtitle', $locale) }}</span>
