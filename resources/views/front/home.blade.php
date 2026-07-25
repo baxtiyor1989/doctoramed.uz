@@ -268,7 +268,12 @@
       </div>
     </section>
 
-    <section class="section" id="services">
+    <section class="section home-services-section" id="services">
+      <div class="home-services-art" aria-hidden="true">
+        <span class="home-services-line home-services-line-one"></span>
+        <span class="home-services-line home-services-line-two"></span>
+        <i></i>
+      </div>
       <div class="container">
         <div class="section-head reveal">
           <span>{{ $settings->tr('services_subtitle', $locale) }}</span>
@@ -425,7 +430,12 @@
       </div>
     </section>
 
-    <section class="section news-section" id="news">
+    <section class="section news-section home-news-section" id="news">
+      <div class="home-news-art" aria-hidden="true">
+        <span class="home-news-line home-news-line-one"></span>
+        <span class="home-news-line home-news-line-two"></span>
+        <i></i>
+      </div>
       <div class="container">
         <div class="section-head reveal">
           <span>{{ $settings->tr('news_subtitle', $locale) }}</span>
@@ -438,6 +448,7 @@
               @if ($article->image)
                 <img src="{{ $article->image }}" alt="{{ $article->tr('title', $locale) }}">
               @endif
+              <span class="news-card-number" aria-hidden="true">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
               <small>{{ optional($article->published_at)->format('d.m.Y') }}</small>
               <h3>{{ $article->tr('title', $locale) }}</h3>
               <a href="{{ $locale === 'uz' ? route('front.news.show', $article) : route('front.locale.news.show', [$locale, $article]) }}">{{ $ui['details'] }} →</a>

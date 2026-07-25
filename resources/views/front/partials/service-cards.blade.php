@@ -1,5 +1,6 @@
 @foreach ($services as $service)
   <article @class(['service-card', 'reveal', 'visible', 'service-collapsed' => $loop->index >= 5]) data-service-card data-service-menu-id="{{ $service->menu_item_id }}">
+    <span class="service-card-number" aria-hidden="true">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
     <div class="icon service-icon">
       @if ($service->icon && (str_starts_with($service->icon, 'http://') || str_starts_with($service->icon, 'https://') || str_starts_with($service->icon, '/media/') || str_starts_with($service->icon, '/storage/')))
         <img src="{{ $service->icon }}" alt="{{ $service->tr('title', $locale) }}">
