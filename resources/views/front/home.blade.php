@@ -22,7 +22,7 @@
       'appointment_type' => 'Kimga ko‘rinishi yoki qaysi tekshiruvga tushishi',
       'appointment_type_placeholder' => 'Yo‘nalishni tanlang',
       'appointment_status_title' => 'Qabulga yozilish',
-      'all_doctors' => 'Barcha shifokorlar', 'clinic' => 'Klinika', 'team' => 'Bizning jamoa', 'close' => 'Yopish', 'hide' => 'Yopish', 'menu' => 'Menu',
+      'all_doctors' => 'Barcha shifokorlar', 'clinic' => 'Klinika', 'team' => 'Bizning jamoa', 'close' => 'Yopish', 'hide' => 'Yopish', 'menu' => 'Menu', 'doctor_profile' => 'Shifokor profili', 'category' => 'Toifa', 'education' => 'Ta’lim va malaka', 'schedule' => 'Ish jadvali', 'experience_label' => 'Tajriba',
     ],
     'ru' => [
       'home' => 'Главная', 'services' => 'Услуги', 'doctors' => 'Врачи', 'about' => 'О клинике', 'news' => 'Новости', 'contact' => 'Контакты',
@@ -45,7 +45,7 @@
       'appointment_type' => 'К кому записаться или какое обследование',
       'appointment_type_placeholder' => 'Выберите направление',
       'appointment_status_title' => 'Запись на прием',
-      'all_doctors' => 'Все врачи', 'clinic' => 'Клиника', 'team' => 'Наша команда', 'close' => 'Закрыть', 'hide' => 'Закрыть', 'menu' => 'Меню',
+      'all_doctors' => 'Все врачи', 'clinic' => 'Клиника', 'team' => 'Наша команда', 'close' => 'Закрыть', 'hide' => 'Закрыть', 'menu' => 'Меню', 'doctor_profile' => 'Профиль врача', 'category' => 'Категория', 'education' => 'Образование и квалификация', 'schedule' => 'График работы', 'experience_label' => 'Опыт',
     ],
     'en' => [
       'home' => 'Home', 'services' => 'Services', 'doctors' => 'Doctors', 'about' => 'About clinic', 'news' => 'News', 'contact' => 'Contact',
@@ -68,7 +68,7 @@
       'appointment_type' => 'Doctor or examination',
       'appointment_type_placeholder' => 'Select a direction',
       'appointment_status_title' => 'Book appointment',
-      'all_doctors' => 'All doctors', 'clinic' => 'Clinic', 'team' => 'Our team', 'close' => 'Close', 'hide' => 'Close', 'menu' => 'Menu',
+      'all_doctors' => 'All doctors', 'clinic' => 'Clinic', 'team' => 'Our team', 'close' => 'Close', 'hide' => 'Close', 'menu' => 'Menu', 'doctor_profile' => 'Doctor profile', 'category' => 'Category', 'education' => 'Education and qualifications', 'schedule' => 'Work schedule', 'experience_label' => 'Experience',
     ],
   ][$locale] ?? [];
   $heroFeatures = $settings->translations['hero_features'][$locale] ?? $settings->hero_features ?? [];
@@ -382,7 +382,11 @@
                 @endif
                 <h3>{{ $doctor->tr('name', $locale) }}</h3>
                 <p>{{ $doctor->tr('specialty', $locale) }}</p>
+                @if ($doctor->tr('category', $locale))
+                  <span class="doctor-card-category">{{ $doctor->tr('category', $locale) }}</span>
+                @endif
                 <small>{{ $doctor->tr('experience', $locale) }}</small>
+                <a class="doctor-detail-btn" href="{{ $locale === 'uz' ? route('front.doctors.show', $doctor) : route('front.locale.doctors.show', [$locale, $doctor]) }}">{{ $ui['details'] }} →</a>
               </article>
             @endforeach
           </div>

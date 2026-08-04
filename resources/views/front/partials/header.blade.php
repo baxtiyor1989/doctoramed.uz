@@ -13,7 +13,7 @@
 
     @php($homeUrl = $locale === 'uz' ? route('front.home') : route('front.locale', $locale))
     <nav class="nav" id="nav">
-      @include('front.partials.menu-items', ['menus' => $frontMenus, 'activeUrl' => '/news'])
+      @include('front.partials.menu-items', ['menus' => $frontMenus, 'activeUrl' => $activeMenuUrl ?? '/news'])
     </nav>
 
     <div class="header-actions">
@@ -22,9 +22,9 @@
           {{ strtoupper($locale) }}
         </button>
         <div class="language-menu">
-          <a href="{{ route('front.news') }}" @class(['active' => $locale === 'uz'])>UZ</a>
-          <a href="{{ route('front.locale.news', 'ru') }}" @class(['active' => $locale === 'ru'])>RU</a>
-          <a href="{{ route('front.locale.news', 'en') }}" @class(['active' => $locale === 'en'])>EN</a>
+          <a href="{{ $languageRoutes['uz'] ?? route('front.news') }}" @class(['active' => $locale === 'uz'])>UZ</a>
+          <a href="{{ $languageRoutes['ru'] ?? route('front.locale.news', 'ru') }}" @class(['active' => $locale === 'ru'])>RU</a>
+          <a href="{{ $languageRoutes['en'] ?? route('front.locale.news', 'en') }}" @class(['active' => $locale === 'en'])>EN</a>
         </div>
       </div>
       <a href="{{ $homeUrl }}#appointment" class="btn btn-primary">{{ $ui['appointment'] }}</a>

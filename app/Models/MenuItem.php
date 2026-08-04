@@ -40,4 +40,9 @@ class MenuItem extends Model
     {
         return $this->children()->with('childrenRecursive');
     }
+
+    public function doctors(): HasMany
+    {
+        return $this->hasMany(Doctor::class);
+    }
 }

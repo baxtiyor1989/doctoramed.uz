@@ -130,7 +130,7 @@
                                 <tr>
                                     <td>
                                         <div class="fw-semibold">{{ $item->title ?? $item->name }}</div>
-                                        @if ($resource === 'services')
+                                        @if (in_array($resource, ['services', 'doctors'], true))
                                             <small class="text-muted">
                                                 Menu: {{ $item->menuItem?->title ?? 'Tanlanmagan' }}
                                             </small>

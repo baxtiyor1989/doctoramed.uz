@@ -10,13 +10,13 @@
     </div>
     <h3>{{ $service->tr('title', $locale) }}</h3>
     <p>{{ $service->tr('description', $locale) }}</p>
+    <span hidden data-service-full-description>{{ $service->tr('description', $locale) }}</span>
     <button
       type="button"
       class="service-detail-link"
       data-service-open
       data-service-title="{{ $service->tr('title', $locale) }}"
-      data-service-id="{{ $service->id }}"
-      data-service-description="{{ $service->tr('description', $locale) }}">
+      data-service-id="{{ $service->id }}">
       {{ $detailsText ?? 'Batafsil' }} →
     </button>
   </article>

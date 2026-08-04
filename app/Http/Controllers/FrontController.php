@@ -68,6 +68,26 @@ class FrontController extends Controller
         return $this->renderArticle($locale, $article);
     }
 
+    public function doctor(Doctor $doctor): View
+    {
+        return $this->renderDoctor('uz', $doctor);
+    }
+
+    public function localizedDoctor(string $locale, Doctor $doctor): View
+    {
+        return $this->renderDoctor($locale, $doctor);
+    }
+
+    public function doctors(Request $request): View
+    {
+        return $this->renderDoctors('uz', $request);
+    }
+
+    public function localizedDoctors(string $locale, Request $request): View
+    {
+        return $this->renderDoctors($locale, $request);
+    }
+
     public function filterServices(Request $request): JsonResponse
     {
         return $this->renderFilteredServices('uz', $request);
@@ -103,6 +123,68 @@ class FrontController extends Controller
             'article' => $article,
             'relatedArticles' => $this->articleQuery()->whereKeyNot($article->getKey())->limit(4)->get(),
             'frontMenus' => $this->frontMenus($locale),
+        ]);
+    }
+
+    private function renderDoctor(string $locale, Doctor $doctor): View
+    {
+        $locale = $this->setLocale($locale);
+        abort_unless($doctor->is_active, 404);
+
+        return view('front.doctor-show', [
+            'locale' => $locale,
+            'settings' => SiteSetting::current(),
+            'services' => Service::query()->where('is_active', true)->orderBy('sort_order')->get(),
+            'doctor' => $doctor,
+            'relatedDoctors' => Doctor::query()
+                ->where('is_active', true)
+                ->whereKeyNot($doctor->getKey())
+                ->orderBy('sort_order')
+                ->limit(4)
+                ->get(),
+            'appointmentTypes' => AppointmentType::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
+            'frontMenus' => $this->frontMenus($locale),
+            'languageRoutes' => [
+                'uz' => route('front.doctors.show', $doctor),
+                'ru' => route('front.locale.doctors.show', ['ru', $doctor]),
+                'en' => route('front.locale.doctors.show', ['en', $doctor]),
+            ],
+            'activeMenuUrl' => '#doctors',
+        ]);
+    }
+
+    private function renderDoctors(string $locale, Request $request): View
+    {
+        $locale = $this->setLocale($locale);
+        $menuId = (int) $request->query('menu_id');
+        $selectedMenu = $menuId > 0
+            ? MenuItem::query()->where('is_active', true)->findOrFail($menuId)
+            : null;
+        $menuIds = $selectedMenu ? $this->menuWithDescendantIds($selectedMenu->id) : collect();
+
+        $doctors = Doctor::query()
+            ->where('is_active', true)
+            ->when($selectedMenu, fn ($query) => $query->whereIn('menu_item_id', $menuIds))
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        return view('front.doctors-index', [
+            'locale' => $locale,
+            'settings' => SiteSetting::current(),
+            'services' => Service::query()->where('is_active', true)->orderBy('sort_order')->get(),
+            'doctors' => $doctors,
+            'selectedMenu' => $selectedMenu,
+            'frontMenus' => $this->frontMenus($locale),
+            'languageRoutes' => [
+                'uz' => route('front.doctors.index', array_filter(['menu_id' => $selectedMenu?->id])),
+                'ru' => route('front.locale.doctors.index', array_filter(['locale' => 'ru', 'menu_id' => $selectedMenu?->id])),
+                'en' => route('front.locale.doctors.index', array_filter(['locale' => 'en', 'menu_id' => $selectedMenu?->id])),
+            ],
+            'activeMenuUrl' => $selectedMenu ? 'doctors?menu_id='.$selectedMenu->id : '#doctors',
         ]);
     }
 
@@ -157,6 +239,25 @@ class FrontController extends Controller
 
     private function frontMenus(string $locale)
     {
+        $directDoctorMenuIds = Doctor::query()
+            ->where('is_active', true)
+            ->whereNotNull('menu_item_id')
+            ->pluck('menu_item_id')
+            ->unique();
+        $doctorMenuIds = $directDoctorMenuIds->values();
+        $currentMenuIds = $directDoctorMenuIds;
+
+        while ($currentMenuIds->isNotEmpty()) {
+            $parentIds = MenuItem::query()
+                ->whereIn('id', $currentMenuIds)
+                ->whereNotNull('parent_id')
+                ->pluck('parent_id')
+                ->unique();
+
+            $doctorMenuIds = $doctorMenuIds->merge($parentIds)->unique()->values();
+            $currentMenuIds = $parentIds;
+        }
+
         return MenuItem::query()
             ->where('is_active', true)
             ->whereNull('parent_id')
@@ -164,18 +265,23 @@ class FrontController extends Controller
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get()
-            ->map(fn (MenuItem $menu) => $this->formatMenu($menu, $locale));
+            ->map(fn (MenuItem $menu) => $this->formatMenu($menu, $locale, $doctorMenuIds));
     }
 
-    private function formatMenu(MenuItem $menu, string $locale): array
+    private function formatMenu(MenuItem $menu, string $locale, $doctorMenuIds): array
     {
         return [
             'id' => $menu->id,
             'title' => $menu->tr('title', $locale),
-            'url' => $this->menuUrl($menu->url, $locale),
+            'has_doctors' => $doctorMenuIds->contains($menu->id),
+            'url' => $doctorMenuIds->contains($menu->id)
+                ? ($locale === 'uz'
+                    ? route('front.doctors.index', ['menu_id' => $menu->id], false)
+                    : route('front.locale.doctors.index', ['locale' => $locale, 'menu_id' => $menu->id], false))
+                : $this->menuUrl($menu->url, $locale),
             'children' => $menu->childrenRecursive
                 ->where('is_active', true)
-                ->map(fn (MenuItem $child) => $this->formatMenu($child, $locale))
+                ->map(fn (MenuItem $child) => $this->formatMenu($child, $locale, $doctorMenuIds))
                 ->values(),
         ];
     }

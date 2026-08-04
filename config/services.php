@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'amocrm' => [
+        'enabled' => env('AMOCRM_ENABLED', false),
+        'base_url' => env('AMOCRM_BASE_URL'),
+        'access_token' => env('AMOCRM_ACCESS_TOKEN'),
+        'pipeline_id' => env('AMOCRM_PIPELINE_ID'),
+        'status_id' => env('AMOCRM_STATUS_ID'),
+        'birth_date_field_id' => env('AMOCRM_BIRTH_DATE_FIELD_ID'),
+        'region_field_id' => env('AMOCRM_REGION_FIELD_ID'),
+        'appointment_type_field_id' => env('AMOCRM_APPOINTMENT_TYPE_FIELD_ID'),
+    ],
+
 ];

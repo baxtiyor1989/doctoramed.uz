@@ -57,9 +57,14 @@ class ContentController extends Controller
             'title' => 'Shifokorlar',
             'model' => Doctor::class,
             'fields' => [
+                'menu_item_id' => ['label' => 'Qaysi menuga mansub', 'type' => 'select', 'options' => []],
                 'name' => ['label' => 'Ism', 'type' => 'text', 'required' => true, 'translatable' => true],
                 'specialty' => ['label' => 'Mutaxassislik', 'type' => 'text', 'translatable' => true],
                 'experience' => ['label' => 'Tajriba', 'type' => 'text', 'translatable' => true],
+                'category' => ['label' => 'Toifa / daraja', 'type' => 'text', 'translatable' => true],
+                'education' => ['label' => 'Ta’lim va malaka', 'type' => 'textarea', 'translatable' => true],
+                'work_schedule' => ['label' => 'Ish jadvali', 'type' => 'text', 'translatable' => true],
+                'bio' => ['label' => 'Shifokor haqida batafsil', 'type' => 'richtext', 'translatable' => true],
                 'image' => ['label' => 'Rasm yuklash', 'type' => 'file', 'accept' => 'image/*'],
                 'sort_order' => ['label' => 'Tartib', 'type' => 'number'],
                 'is_active' => ['label' => 'Faol', 'type' => 'checkbox'],
@@ -241,7 +246,7 @@ class ContentController extends Controller
             return view('admin.content.index', compact('resource', 'config', 'items'));
         }
 
-        if ($resource === 'services') {
+        if (in_array($resource, ['services', 'doctors'], true)) {
             $query->with('menuItem');
         }
 
@@ -322,7 +327,7 @@ class ContentController extends Controller
             $config['fields']['parent_id']['options'] = ['' => 'Parent yo‘q'] + $this->menuParentOptions($menuOptions);
         }
 
-        if ($resource === 'services') {
+        if (in_array($resource, ['services', 'doctors'], true)) {
             $menuOptions = MenuItem::query()
                 ->whereNull('parent_id')
                 ->with('childrenRecursive')

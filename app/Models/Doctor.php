@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Concerns\HasTranslations;
 
-#[Fillable(['name', 'specialty', 'experience', 'image', 'translations', 'sort_order', 'is_active'])]
+#[Fillable(['menu_item_id', 'name', 'specialty', 'experience', 'category', 'education', 'work_schedule', 'bio', 'image', 'translations', 'sort_order', 'is_active'])]
 class Doctor extends Model
 {
     use HasTranslations;
@@ -41,7 +42,12 @@ class Doctor extends Model
                 $path = substr($path, strlen('storage/'));
             }
 
-            return route('media.show', ['path' => $path]);
+            return route('media.show', ['path' => $path], false);
         });
+    }
+
+    public function menuItem(): BelongsTo
+    {
+        return $this->belongsTo(MenuItem::class);
     }
 }

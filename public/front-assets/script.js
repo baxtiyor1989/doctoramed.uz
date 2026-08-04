@@ -280,7 +280,10 @@ const bindServiceModalOpeners = () => {
     item.dataset.serviceBound = "1";
     item.addEventListener("click", () => {
       if (serviceModalTitle) serviceModalTitle.textContent = item.dataset.serviceTitle || "";
-      if (serviceModalText) serviceModalText.textContent = item.dataset.serviceDescription || "";
+      if (serviceModalText) {
+        const description = item.closest("[data-service-card]")?.querySelector("[data-service-full-description]");
+        serviceModalText.textContent = description?.textContent || item.dataset.serviceDescription || "";
+      }
       selectedServiceForAppointment = item.dataset.serviceTitle || "";
       serviceModal?.classList.add("open");
       serviceModal?.setAttribute("aria-hidden", "false");
@@ -329,7 +332,10 @@ const setAppointmentType = (value) => {
 };
 
 appointmentOpenItems.forEach((item) => {
-  item.addEventListener("click", openAppointmentModal);
+  item.addEventListener("click", () => {
+    setAppointmentType(item.dataset.appointmentType || "");
+    openAppointmentModal();
+  });
 });
 
 serviceAppointmentButton?.addEventListener("click", () => {

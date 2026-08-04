@@ -5,7 +5,7 @@
       @class(['active' => ($activeUrl ?? null) && str_contains($menu['url'], $activeUrl)])
       href="{{ $menu['url'] }}"
       data-menu-id="{{ $menu['id'] }}"
-      data-service-filterable="{{ $level > 0 ? '1' : '0' }}">
+      data-service-filterable="{{ $level > 0 && !($menu['has_doctors'] ?? false) ? '1' : '0' }}">
       {{ $menu['title'] }}
     </a>
     @if ($menu['children']->isNotEmpty())

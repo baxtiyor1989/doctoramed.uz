@@ -73,24 +73,28 @@
                                     @elseif ($field['type'] === 'richtext')
                                         <textarea class="form-control ckeditor-field @error($name) is-invalid @enderror" id="{{ $name }}" name="{{ $name }}" rows="8">{{ old($name, $item->{$name}) }}</textarea>
                                     @elseif ($field['type'] === 'file')
-                                        <label class="custom-upload @error($name) is-invalid @enderror">
-                                            <input id="{{ $name }}" name="{{ $name }}" type="file" accept="{{ $field['accept'] ?? '' }}" data-upload-input>
-                                            <span class="custom-upload-icon"><i class="ri-upload-cloud-2-line"></i></span>
-                                            <span class="custom-upload-title">Rasm yuklash</span>
-                                            <span class="custom-upload-text" data-upload-text>Fayl tanlang yoki shu yerga tashlang</span>
-                                        </label>
-                                        <div class="uploaded-image-grid mt-3" data-upload-preview></div>
-                                        @if ($item->{$name})
-                                            <div class="uploaded-image-grid mt-3" data-existing-upload="{{ $name }}">
-                                                <label class="uploaded-image-card">
-                                                    <img src="{{ $item->{$name} }}" alt="">
-                                                    <span>
-                                                        <input type="checkbox" name="remove_{{ $name }}" value="1">
-                                                        O‘chirish
-                                                    </span>
-                                                </label>
+                                        <div @class(['single-upload-row', 'has-existing-image' => $item->{$name}])>
+                                            <div class="single-upload-preview-column">
+                                                <div class="uploaded-image-grid" data-upload-preview></div>
+                                                @if ($item->{$name})
+                                                    <div class="uploaded-image-grid" data-existing-upload="{{ $name }}">
+                                                        <label class="uploaded-image-card">
+                                                            <img src="{{ $item->{$name} }}" alt="">
+                                                            <span>
+                                                                <input type="checkbox" name="remove_{{ $name }}" value="1">
+                                                                O‘chirish
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        @endif
+                                            <label class="custom-upload @error($name) is-invalid @enderror">
+                                                <input id="{{ $name }}" name="{{ $name }}" type="file" accept="{{ $field['accept'] ?? '' }}" data-upload-input>
+                                                <span class="custom-upload-icon"><i class="ri-upload-cloud-2-line"></i></span>
+                                                <span class="custom-upload-title">Rasm yuklash</span>
+                                                <span class="custom-upload-text" data-upload-text>Fayl tanlang yoki shu yerga tashlang</span>
+                                            </label>
+                                        </div>
                                     @elseif ($field['type'] === 'multi_file')
                                         <label class="custom-upload custom-upload-multiple @error($name) is-invalid @enderror">
                                             <input id="{{ $name }}" name="{{ $name }}[]" type="file" accept="{{ $field['accept'] ?? '' }}" multiple data-upload-input>
@@ -210,6 +214,43 @@
             gap: 12px;
         }
 
+        .single-upload-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            align-items: stretch;
+        }
+
+        .single-upload-row.has-existing-image {
+            grid-template-columns: minmax(120px, 160px) minmax(0, 1fr);
+        }
+
+        .single-upload-preview-column {
+            display: none;
+            align-self: stretch;
+        }
+
+        .single-upload-row.has-existing-image .single-upload-preview-column {
+            display: block;
+        }
+
+        .single-upload-row .custom-upload {
+            min-height: 150px;
+        }
+
+        .single-upload-row .uploaded-image-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .single-upload-row .uploaded-image-grid:empty {
+            display: none;
+        }
+
+        .single-upload-row [data-existing-upload],
+        .single-upload-row [data-upload-preview]:not(:empty) {
+            height: 100%;
+        }
+
         .uploaded-image-card {
             position: relative;
             display: block;
@@ -225,6 +266,23 @@
             height: 92px;
             display: block;
             object-fit: cover;
+        }
+
+        .single-upload-row .uploaded-image-card img {
+            height: 110px;
+            object-fit: contain;
+            background: #f8fafc;
+        }
+
+        @media (max-width: 575px) {
+            .single-upload-row.has-existing-image {
+                grid-template-columns: 110px minmax(0, 1fr);
+            }
+
+            .single-upload-row .custom-upload {
+                min-height: 140px;
+                padding: 18px 12px;
+            }
         }
 
         .uploaded-image-card span {
@@ -278,9 +336,8 @@
         document.querySelectorAll('[data-upload-input]').forEach((input) => {
             const wrapper = input.closest('.custom-upload');
             const text = wrapper?.querySelector('[data-upload-text]');
-            const preview = wrapper?.nextElementSibling?.matches('[data-upload-preview]')
-                ? wrapper.nextElementSibling
-                : null;
+            const preview = wrapper?.closest('.single-upload-row')?.querySelector('[data-upload-preview]')
+                || (wrapper?.nextElementSibling?.matches('[data-upload-preview]') ? wrapper.nextElementSibling : null);
             const maxFileSize = 2 * 1024 * 1024;
             const maxTotalSize = 8 * 1024 * 1024;
 
@@ -315,6 +372,7 @@
 
                 if (preview) {
                     preview.innerHTML = '';
+                    preview.closest('.single-upload-row')?.classList.add('has-existing-image');
                     document.querySelector(`[data-existing-upload="${input.name}"]`)?.classList.add('d-none');
 
                     files.forEach((file) => {
