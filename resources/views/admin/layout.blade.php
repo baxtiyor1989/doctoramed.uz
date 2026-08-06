@@ -96,6 +96,36 @@
         .logo-sm .admin-brand-logo {
             width: 34px;
         }
+
+        .navbar-menu {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .navbar-menu #scrollbar {
+            height: calc(100vh - 70px) !important;
+            max-height: calc(100vh - 70px);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .navbar-menu #scrollbar .simplebar-content-wrapper {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+
+        .navbar-menu #scrollbar .simplebar-content {
+            padding-bottom: 32px !important;
+        }
+
+        .navbar-menu #scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .navbar-menu #scrollbar::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .24);
+        }
     </style>
     @stack('styles')
 </head>
@@ -148,7 +178,7 @@
                 </a>
             </div>
 
-            <div id="scrollbar">
+            <div id="scrollbar" class="h-100" data-simplebar>
                 <div class="container-fluid">
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span>Menu</span></li>
