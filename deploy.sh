@@ -44,8 +44,17 @@ log "============================================"
 
 cd "$PROJECT_DIR"
 
+if [ ! -d "$PROJECT_DIR/.git" ]; then
+  log ".git topilmadi. Repository birinchi marta ulanmoqda..."
+  git init
+fi
+
 log "GitHub repository manzili tekshirilmoqda..."
-git remote set-url "$REMOTE" "$REPOSITORY_URL"
+if git remote get-url "$REMOTE" >/dev/null 2>&1; then
+  git remote set-url "$REMOTE" "$REPOSITORY_URL"
+else
+  git remote add "$REMOTE" "$REPOSITORY_URL"
+fi
 
 log "GitHub repozitoriy $REMOTE/$BRANCH branchidan yangilanmoqda..."
 git fetch "$REMOTE" "$BRANCH"
