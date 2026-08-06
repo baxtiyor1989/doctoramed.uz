@@ -17,10 +17,11 @@ class DeployController extends Controller
 
         return view('admin.deploy', [
             'branch' => config('deploy.branch'),
-            'remote' => config('deploy.remote'),
             'repository' => config('deploy.repository'),
             'commit' => $this->gitValue(['rev-parse', '--short', 'HEAD']),
-            'deployed' => $this->deploymentResult(),
+            'status' => $this->readJson(storage_path('framework/deploy-status.json')),
+            'version' => File::exists(public_path('version.txt')) ? File::get(public_path('version.txt')) : null,
+            'log' => File::exists(storage_path('logs/deploy.log')) ? File::get(storage_path('logs/deploy.log')) : null,
         ]);
     }
 
@@ -28,68 +29,28 @@ class DeployController extends Controller
     {
         $this->authorizeAdministrator();
 
-        $lockPath = storage_path('framework/deploy.lock');
-        File::ensureDirectoryExists(dirname($lockPath));
-        $lock = fopen($lockPath, 'c+');
-
-        if ($lock === false || ! flock($lock, LOCK_EX | LOCK_NB)) {
-            return back()->withErrors(['deploy' => 'Boshqa yangilash jarayoni hali tugamagan.']);
-        }
-
-        $remote = (string) config('deploy.remote');
-        $branch = (string) config('deploy.branch');
-        $repository = (string) config('deploy.repository');
-        $commands = [
-            ['label' => 'GitHub repository manzili tekshirilmoqda', 'command' => ['git', 'remote', 'set-url', $remote, $repository]],
-            ['label' => "GitHub holati olinmoqda ({$remote}/{$branch})", 'command' => ['git', 'fetch', $remote, $branch]],
-            ['label' => 'Kod yangilanmoqda', 'command' => ['git', 'merge', '--ff-only', "{$remote}/{$branch}"]],
-            ['label' => 'Composer paketlari o‘rnatilmoqda', 'command' => ['composer', 'install', '--no-dev', '--no-interaction', '--prefer-dist', '--optimize-autoloader']],
-            ['label' => 'NPM paketlari o‘rnatilmoqda', 'command' => ['npm', 'ci', '--no-audit', '--no-fund']],
-            ['label' => 'Frontend build qilinmoqda', 'command' => ['npm', 'run', 'build']],
-            ['label' => 'Ma’lumotlar bazasi migratsiyalari bajarilmoqda', 'command' => [PHP_BINARY, 'artisan', 'migrate', '--force']],
-            ['label' => 'Laravel keshlari yangilanmoqda', 'command' => [PHP_BINARY, 'artisan', 'optimize:clear']],
-            ['label' => 'Laravel production keshi yaratilmoqda', 'command' => [PHP_BINARY, 'artisan', 'optimize']],
-        ];
-
-        $log = [];
-        $successful = true;
-
         try {
-            foreach ($commands as $item) {
-                $log[] = '['.now()->format('Y-m-d H:i:s').'] '.$item['label'].'...';
-                $process = new Process($item['command'], base_path());
-                $process->setTimeout((int) config('deploy.timeout'));
-                $process->run();
-                $output = trim($process->getOutput().$process->getErrorOutput());
-                if ($output !== '') {
-                    $log[] = $output;
-                }
-                if (! $process->isSuccessful()) {
-                    $successful = false;
-                    $log[] = 'Xatolik: buyruq '.$process->getExitCode().' kodi bilan yakunlandi.';
-                    break;
-                }
+            $script = base_path('deploy.sh');
+            abort_unless(File::exists($script), 500, 'deploy.sh fayli topilmadi.');
+
+            $command = 'nohup bash '.escapeshellarg($script).' >/dev/null 2>&1 &';
+            $process = Process::fromShellCommandline($command, base_path(), [
+                'DEPLOY_GIT_REPOSITORY' => config('deploy.repository'),
+                'DEPLOY_GIT_REMOTE' => config('deploy.remote'),
+                'DEPLOY_GIT_BRANCH' => config('deploy.branch'),
+            ]);
+            $process->setTimeout(10)->run();
+
+            if (! $process->isSuccessful()) {
+                return back()->withErrors(['deploy' => 'deploy.sh jarayonini ishga tushirib bo‘lmadi.']);
             }
+
+            return back()->with('status', 'Deploy jarayoni fonda ishga tushirildi. Natijani yangilab kuzating.');
         } catch (Throwable $exception) {
             report($exception);
-            $successful = false;
-            $log[] = 'Xatolik: '.$exception->getMessage();
-        } finally {
-            flock($lock, LOCK_UN);
-            fclose($lock);
+
+            return back()->withErrors(['deploy' => 'Deployni ishga tushirishda xatolik yuz berdi.']);
         }
-
-        $result = [
-            'successful' => $successful,
-            'commit' => $this->gitValue(['rev-parse', '--short', 'HEAD']),
-            'deployed_at' => now()->toIso8601String(),
-            'log' => implode(PHP_EOL.PHP_EOL, $log),
-        ];
-        File::put(storage_path('app/deploy-result.json'), json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-        return back()->with($successful ? 'status' : 'deploy_error', $successful
-            ? 'GitHub’dan yangilash muvaffaqiyatli yakunlandi.'
-            : 'Yangilash yakunlanmadi. Deploy logini tekshiring.');
     }
 
     private function authorizeAdministrator(): void
@@ -116,13 +77,14 @@ class DeployController extends Controller
         }
     }
 
-    private function deploymentResult(): ?array
+    private function readJson(string $path): ?array
     {
-        $path = storage_path('app/deploy-result.json');
         if (! File::exists($path)) {
             return null;
         }
 
-        return json_decode(File::get($path), true);
+        $value = json_decode(File::get($path), true);
+
+        return is_array($value) ? $value : null;
     }
 }

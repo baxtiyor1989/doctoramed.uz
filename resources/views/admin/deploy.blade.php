@@ -21,9 +21,7 @@
                 <div>Repository: {{ $repository }}</div>
                 <div>Branch: {{ $branch }}</div>
                 <div>Joriy commit: {{ $commit }}</div>
-                @if ($deployed)
-                    <div>Oxirgi deploy: {{ \Illuminate\Support\Carbon::parse($deployed['deployed_at'])->timezone(config('app.timezone'))->format('Y-m-d H:i:s') }}</div>
-                @endif
+                @if ($version)<div class="mt-2">{!! nl2br(e(trim($version))) !!}</div>@endif
             </div>
             <form method="POST" action="{{ route('admin.deploy.store') }}" id="deploy-form">
                 @csrf
@@ -34,16 +32,19 @@
         </div>
     </div>
 
-    @if ($deployed)
+    @if ($status || $log)
         <div class="card">
             <div class="card-header"><h5 class="card-title mb-0">Deploy log</h5></div>
             <div class="card-body">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="badge bg-{{ $deployed['successful'] ? 'success' : 'danger' }}">{{ $deployed['successful'] ? 'Muvaffaqiyatli' : 'Xatolik' }}</span>
-                    <span>{{ $deployed['successful'] ? 'Deploy muvaffaqiyatli yakunlandi' : 'Deploy yakunlanmadi' }}</span>
-                    <strong>({{ $deployed['commit'] }})</strong>
-                </div>
-                <pre class="deploy-log mb-0">{{ $deployed['log'] }}</pre>
+                @if ($status)
+                    @php($statusColor = ['success' => 'success', 'failed' => 'danger', 'running' => 'warning'][$status['status']] ?? 'secondary')
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="badge bg-{{ $statusColor }}">{{ ['success' => 'Muvaffaqiyatli', 'failed' => 'Xatolik', 'running' => 'Bajarilmoqda'][$status['status']] ?? $status['status'] }}</span>
+                        <span>{{ $status['message'] ?? '' }}</span>
+                        @if (!empty($status['version']))<strong>{{ $status['version'] }}</strong>@endif
+                    </div>
+                @endif
+                @if ($log)<pre class="deploy-log mb-0">{{ $log }}</pre>@endif
             </div>
         </div>
     @endif
@@ -66,5 +67,8 @@
             button.disabled = true;
             button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Yangilanmoqda...';
         });
+        @if (($status['status'] ?? null) === 'running')
+            window.setTimeout(() => window.location.reload(), 5000);
+        @endif
     </script>
 @endpush
