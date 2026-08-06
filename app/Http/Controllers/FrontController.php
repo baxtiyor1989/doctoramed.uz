@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
 use App\Models\AboutSlide;
 use App\Models\AppointmentType;
+use App\Models\Article;
 use App\Models\Branch;
 use App\Models\Doctor;
 use App\Models\HeroVideo;
 use App\Models\MenuItem;
 use App\Models\Partner;
+use App\Models\Region;
 use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
@@ -42,6 +43,7 @@ class FrontController extends Controller
             'vacancies' => Vacancy::query()->where('is_active', true)->orderBy('sort_order')->get(),
             'branches' => Branch::query()->where('is_active', true)->orderBy('sort_order')->get(),
             'appointmentTypes' => AppointmentType::query()->where('is_active', true)->orderBy('sort_order')->get(),
+            'regions' => $this->appointmentRegions(),
             'heroVideos' => $heroVideos,
             'heroVideoItems' => $heroVideoItems,
             'frontMenus' => $this->frontMenus($locale),
@@ -146,6 +148,7 @@ class FrontController extends Controller
                 ->where('is_active', true)
                 ->orderBy('sort_order')
                 ->get(),
+            'regions' => $this->appointmentRegions(),
             'frontMenus' => $this->frontMenus($locale),
             'languageRoutes' => [
                 'uz' => route('front.doctors.show', $doctor),
@@ -186,6 +189,16 @@ class FrontController extends Controller
             ],
             'activeMenuUrl' => $selectedMenu ? 'doctors?menu_id='.$selectedMenu->id : '#doctors',
         ]);
+    }
+
+    private function appointmentRegions()
+    {
+        return Region::query()
+            ->where('is_active', true)
+            ->with(['districts' => fn ($query) => $query->where('is_active', true)])
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
     }
 
     private function renderFilteredServices(string $locale, Request $request): JsonResponse

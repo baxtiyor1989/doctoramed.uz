@@ -163,6 +163,8 @@
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'vacancies') }}"><i class="ri-briefcase-line"></i> <span>Vakant lavozimlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'branches') }}"><i class="ri-map-pin-line"></i> <span>Filiallar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'appointment-types') }}"><i class="ri-stethoscope-line"></i> <span>Qabul yo‘nalishlari</span></a></li>
+                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'regions') }}"><i class="ri-map-2-line"></i> <span>Viloyatlar</span></a></li>
+                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'districts') }}"><i class="ri-map-pin-2-line"></i> <span>Tumanlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'menus') }}"><i class="ri-menu-3-line"></i> <span>Front menyular</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.appointments.index') }}"><i class="ri-calendar-check-line"></i> <span>Qabul so‘rovlari</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.resumes.index') }}"><i class="ri-file-user-line"></i> <span>Rezyumelar</span></a></li>

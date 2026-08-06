@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AboutSlide;
-use App\Models\Article;
 use App\Models\AppointmentType;
+use App\Models\Article;
 use App\Models\Branch;
+use App\Models\District;
 use App\Models\Doctor;
 use App\Models\HeroVideo;
 use App\Models\MenuItem;
 use App\Models\Partner;
+use App\Models\Region;
 use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
 use App\Models\Vacancy;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -142,6 +143,25 @@ class ContentController extends Controller
                 'is_active' => ['label' => 'Faol', 'type' => 'checkbox'],
             ],
         ],
+        'regions' => [
+            'title' => 'Viloyatlar',
+            'model' => Region::class,
+            'fields' => [
+                'title' => ['label' => 'Viloyat nomi', 'type' => 'text', 'required' => true, 'translatable' => true],
+                'sort_order' => ['label' => 'Tartib', 'type' => 'number'],
+                'is_active' => ['label' => 'Faol', 'type' => 'checkbox'],
+            ],
+        ],
+        'districts' => [
+            'title' => 'Tumanlar',
+            'model' => District::class,
+            'fields' => [
+                'region_id' => ['label' => 'Qaysi viloyatga tegishli', 'type' => 'select', 'required' => true, 'options' => []],
+                'title' => ['label' => 'Tuman nomi', 'type' => 'text', 'required' => true, 'translatable' => true],
+                'sort_order' => ['label' => 'Tartib', 'type' => 'number'],
+                'is_active' => ['label' => 'Faol', 'type' => 'checkbox'],
+            ],
+        ],
         'menus' => [
             'title' => 'Front menyular',
             'model' => MenuItem::class,
@@ -250,6 +270,10 @@ class ContentController extends Controller
             $query->with('menuItem');
         }
 
+        if ($resource === 'districts') {
+            $query->with('region');
+        }
+
         $items = $query->get();
 
         return view('admin.content.index', compact('resource', 'config', 'items'));
@@ -338,6 +362,14 @@ class ContentController extends Controller
             $config['fields']['menu_item_id']['options'] = ['' => 'Menu tanlanmagan'] + $this->menuParentOptions($menuOptions);
         }
 
+        if ($resource === 'districts') {
+            $config['fields']['region_id']['options'] = Region::query()
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->pluck('title', 'id')
+                ->all();
+        }
+
         return $config;
     }
 
@@ -391,7 +423,7 @@ class ContentController extends Controller
                 'checkbox' => ['nullable', 'boolean'],
                 'file' => ['nullable', 'image', 'max:2048'],
                 'multi_file' => ['nullable', 'array'],
-                'select' => ['nullable'],
+                'select' => [($field['required'] ?? false) ? 'required' : 'nullable'],
                 'number' => ['nullable', 'integer', 'min:0'],
                 'date' => ['nullable', 'date'],
                 default => [($field['required'] ?? false) ? 'required' : 'nullable', 'string'],
@@ -400,6 +432,10 @@ class ContentController extends Controller
             if ($field['type'] === 'multi_file') {
                 $rules["{$name}.*"] = ['image', 'max:2048'];
             }
+        }
+
+        if ($resource === 'districts') {
+            $rules['region_id'] = ['required', 'exists:regions,id'];
         }
 
         $data = $request->validate($rules, [

@@ -135,6 +135,9 @@
                                                 Menu: {{ $item->menuItem?->title ?? 'Tanlanmagan' }}
                                             </small>
                                         @endif
+                                        @if ($resource === 'districts')
+                                            <small class="text-muted">Viloyat: {{ $item->region?->title ?? 'Topilmadi' }}</small>
+                                        @endif
                                     </td>
                                     <td>{{ $item->sort_order }}</td>
                                     <td>

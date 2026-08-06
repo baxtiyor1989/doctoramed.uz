@@ -331,6 +331,35 @@ const setAppointmentType = (value) => {
   select.dispatchEvent(new Event("change", { bubbles: true }));
 };
 
+document.querySelectorAll("[data-region-select]").forEach((regionSelect) => {
+  const form = regionSelect.closest("form");
+  const districtField = form?.querySelector("[data-district-field]");
+  const districtSelect = form?.querySelector("[data-district-select]");
+  if (!districtField || !districtSelect) return;
+
+  const updateDistricts = (resetValue = false) => {
+    const regionId = regionSelect.value;
+    const options = Array.from(districtSelect.options).slice(1);
+    let districtCount = 0;
+
+    options.forEach((option) => {
+      const matches = regionId !== "" && option.dataset.regionId === regionId;
+      option.hidden = !matches;
+      option.disabled = !matches;
+      if (matches) districtCount += 1;
+    });
+
+    if (resetValue) districtSelect.value = "";
+    const hasDistricts = districtCount > 0;
+    districtField.hidden = !hasDistricts;
+    districtSelect.disabled = !hasDistricts;
+    districtSelect.required = hasDistricts;
+  };
+
+  regionSelect.addEventListener("change", () => updateDistricts(true));
+  updateDistricts(false);
+});
+
 appointmentOpenItems.forEach((item) => {
   item.addEventListener("click", () => {
     setAppointmentType(item.dataset.appointmentType || "");

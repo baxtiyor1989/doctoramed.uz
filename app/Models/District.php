@@ -2,27 +2,23 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['full_name', 'birth_date', 'region_id', 'district_id', 'region_district', 'phone', 'appointment_type'])]
-class AppointmentApplication extends Model
+#[Fillable(['region_id', 'title', 'translations', 'sort_order', 'is_active'])]
+class District extends Model
 {
+    use HasTranslations;
+
     protected function casts(): array
     {
-        return [
-            'birth_date' => 'date',
-        ];
+        return ['translations' => 'array', 'is_active' => 'boolean'];
     }
 
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
-    }
-
-    public function district(): BelongsTo
-    {
-        return $this->belongsTo(District::class);
     }
 }

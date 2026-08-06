@@ -19,6 +19,7 @@
       'resume_submit' => 'Yuborish',
       'appointment_birth_date' => 'Tug‘ilgan kun, oy, yili',
       'appointment_region' => 'Viloyati, tumani',
+      'region' => 'Viloyat', 'region_placeholder' => 'Viloyatni tanlang', 'district' => 'Tuman', 'district_placeholder' => 'Tumanni tanlang',
       'appointment_type' => 'Kimga ko‘rinishi yoki qaysi tekshiruvga tushishi',
       'appointment_type_placeholder' => 'Yo‘nalishni tanlang',
       'appointment_status_title' => 'Qabulga yozilish',
@@ -42,6 +43,7 @@
       'resume_submit' => 'Отправить',
       'appointment_birth_date' => 'Дата рождения',
       'appointment_region' => 'Область, район',
+      'region' => 'Область', 'region_placeholder' => 'Выберите область', 'district' => 'Район', 'district_placeholder' => 'Выберите район',
       'appointment_type' => 'К кому записаться или какое обследование',
       'appointment_type_placeholder' => 'Выберите направление',
       'appointment_status_title' => 'Запись на прием',
@@ -65,6 +67,7 @@
       'resume_submit' => 'Send',
       'appointment_birth_date' => 'Date of birth',
       'appointment_region' => 'Region, district',
+      'region' => 'Region', 'region_placeholder' => 'Select a region', 'district' => 'District', 'district_placeholder' => 'Select a district',
       'appointment_type' => 'Doctor or examination',
       'appointment_type_placeholder' => 'Select a direction',
       'appointment_status_title' => 'Book appointment',
@@ -590,11 +593,10 @@
           <input type="date" name="appointment_birth_date" value="{{ old('appointment_birth_date') }}" required>
           @error('appointment_birth_date')<small>{{ $message }}</small>@enderror
         </label>
-        <label>
-          <span>{{ $ui['appointment_region'] }}</span>
-          <input type="text" name="appointment_region_district" value="{{ old('appointment_region_district') }}" required>
-          @error('appointment_region_district')<small>{{ $message }}</small>@enderror
-        </label>
+        @include('front.partials.appointment-location-fields', [
+          'regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'],
+          'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder'],
+        ])
         <label>
           <span>{{ $ui['resume_phone'] }}</span>
           <input type="tel" name="appointment_phone" value="{{ old('appointment_phone') }}" placeholder="+998 __ ___ __ __" inputmode="tel" data-phone-mask required>

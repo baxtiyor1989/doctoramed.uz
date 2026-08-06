@@ -12,7 +12,7 @@ class AppointmentApplicationController extends Controller
     public function index(): View
     {
         return view('admin.appointments.index', [
-            'items' => AppointmentApplication::query()->latest()->paginate(20),
+            'items' => AppointmentApplication::query()->with(['region', 'district'])->latest()->paginate(20),
         ]);
     }
 
