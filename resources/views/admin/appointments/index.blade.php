@@ -14,6 +14,7 @@
                             <th>Viloyat, tuman</th>
                             <th>Telefon</th>
                             <th>Yo‘nalish</th>
+                            <th>Shikoyatlar</th>
                             <th>Sana</th>
                             <th></th>
                         </tr>
@@ -32,6 +33,7 @@
                                 </td>
                                 <td><a href="tel:{{ preg_replace('/\D+/', '', $item->phone) }}">{{ $item->phone }}</a></td>
                                 <td>{{ $item->appointment_type }}</td>
+                                <td style="min-width: 220px">{{ $item->complaint ?: '—' }}</td>
                                 <td>{{ $item->created_at->format('d.m.Y H:i') }}</td>
                                 <td class="text-end">
                                     <form method="POST" action="{{ route('admin.appointments.destroy', $item) }}" onsubmit="return confirm('O‘chirasizmi?')">
@@ -43,7 +45,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">Qabul so‘rovlari yo‘q.</td>
+                                <td colspan="8" class="text-center text-muted">Qabul so‘rovlari yo‘q.</td>
                             </tr>
                         @endforelse
                     </tbody>

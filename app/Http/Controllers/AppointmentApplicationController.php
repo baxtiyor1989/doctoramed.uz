@@ -35,6 +35,7 @@ class AppointmentApplicationController extends Controller
                     ->where('is_active', true)),
             ],
             'appointment_address' => ['nullable', 'string', 'max:500'],
+            'appointment_complaint' => ['nullable', 'string', 'max:1000'],
             'appointment_phone' => ['required', 'regex:/^\+998\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/'],
             'appointment_types' => ['required', 'array', 'min:1'],
             'appointment_types.*' => ['required', 'string', 'max:255', 'distinct'],
@@ -76,6 +77,7 @@ class AppointmentApplicationController extends Controller
             'district_id' => $district?->id,
             'region_district' => $regionDistrict,
             'address' => $data['appointment_address'] ?? null,
+            'complaint' => $data['appointment_complaint'] ?? null,
             'phone' => $data['appointment_phone'],
             'appointment_type' => implode(', ', $data['appointment_types']),
         ]);

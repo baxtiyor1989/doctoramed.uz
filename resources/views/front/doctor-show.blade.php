@@ -12,6 +12,8 @@
   $ui['captcha_refresh'] = ['uz' => 'Kodni yangilash', 'ru' => 'Обновить код', 'en' => 'Refresh code'][$locale] ?? 'Kodni yangilash';
   $ui['address'] = ['uz' => 'Manzil (ixtiyoriy)', 'ru' => 'Адрес (необязательно)', 'en' => 'Address (optional)'][$locale] ?? 'Manzil (ixtiyoriy)';
   $ui['address_placeholder'] = ['uz' => 'Ko‘cha, uy va xonadon', 'ru' => 'Улица, дом и квартира', 'en' => 'Street, house and apartment'][$locale] ?? 'Ko‘cha, uy va xonadon';
+  $ui['complaint'] = ['uz' => 'Shikoyatlar (ixtiyoriy)', 'ru' => 'Жалобы (необязательно)', 'en' => 'Complaints (optional)'][$locale] ?? 'Shikoyatlar (ixtiyoriy)';
+  $ui['complaint_placeholder'] = ['uz' => 'Shikoyatingizni qisqacha yozing', 'ru' => 'Кратко опишите ваши жалобы', 'en' => 'Briefly describe your complaints'][$locale] ?? 'Shikoyatingizni qisqacha yozing';
   $homeUrl = $locale === 'uz' ? route('front.home') : route('front.locale', $locale);
 @endphp
 <!DOCTYPE html>
@@ -113,6 +115,7 @@
         <label><span>{{ $ui['phone'] }}</span><input type="tel" name="appointment_phone" value="{{ old('appointment_phone') }}" placeholder="+998 __ ___ __ __" inputmode="tel" data-phone-mask required>@error('appointment_phone')<small>{{ $message }}</small>@enderror</label>
         @include('front.partials.appointment-location-fields', ['regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'], 'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder']])
         <label class="resume-form-wide"><span>{{ $ui['address'] }}</span><input type="text" name="appointment_address" value="{{ old('appointment_address') }}" placeholder="{{ $ui['address_placeholder'] }}" maxlength="500">@error('appointment_address')<small>{{ $message }}</small>@enderror</label>
+        <label class="resume-form-wide"><span>{{ $ui['complaint'] }}</span><textarea name="appointment_complaint" rows="3" maxlength="1000" placeholder="{{ $ui['complaint_placeholder'] }}">{{ old('appointment_complaint') }}</textarea>@error('appointment_complaint')<small>{{ $message }}</small>@enderror</label>
         <label class="resume-form-wide">
           <span>{{ $ui['type'] }}</span>
           <span class="resume-multi-select-wrap">
