@@ -1,17 +1,18 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
-use App\Http\Controllers\FrontController;
+use App\Http\Controllers\Admin\AppointmentApplicationController as AdminAppointmentApplicationController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DeployController;
+use App\Http\Controllers\Admin\ResumeApplicationController as AdminResumeApplicationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AppointmentApplicationController;
+use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ResumeApplicationController;
-use App\Http\Controllers\Admin\AppointmentApplicationController as AdminAppointmentApplicationController;
-use App\Http\Controllers\Admin\ResumeApplicationController as AdminResumeApplicationController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', FrontController::class)->name('front.home');
 Route::get('/services/filter', [FrontController::class, 'filterServices'])->name('front.services.filter');
@@ -65,6 +66,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
+        Route::get('/deploy', [DeployController::class, 'index'])->name('deploy.index');
+        Route::post('/deploy', [DeployController::class, 'store'])->name('deploy.store');
         Route::get('/settings', [ContentController::class, 'settings'])->name('settings');
         Route::put('/settings', [ContentController::class, 'updateSettings'])->name('settings.update');
         Route::post('/clear-cache', [ContentController::class, 'clearCache'])->name('clear-cache');
