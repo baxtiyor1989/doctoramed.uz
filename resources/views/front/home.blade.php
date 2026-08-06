@@ -107,7 +107,7 @@
   <link rel="icon" type="image/png" href="{{ asset('front-assets/logo.png') }}" />
   <link rel="apple-touch-icon" href="{{ asset('front-assets/logo.png') }}" />
   <link rel="stylesheet" href="{{ asset('admin-assets/assets/libs/choices.js/public/assets/styles/choices.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('front-assets/style.css') }}" />
+  <link rel="stylesheet" href="{{ asset('front-assets/style.css') }}?v={{ filemtime(public_path('front-assets/style.css')) }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">

@@ -17,7 +17,7 @@
   <title>{{ $doctor->tr('name', $locale) }} | {{ $settings->tr('site_title', $locale) }}</title>
   <link rel="icon" type="image/png" href="{{ asset('front-assets/logo.png') }}">
   <link rel="stylesheet" href="{{ asset('admin-assets/assets/libs/choices.js/public/assets/styles/choices.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('front-assets/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('front-assets/style.css') }}?v={{ filemtime(public_path('front-assets/style.css')) }}">
 </head>
 <body id="top">
   <div class="page-lines"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span></div>

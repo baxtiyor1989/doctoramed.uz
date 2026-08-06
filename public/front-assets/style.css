@@ -5582,17 +5582,23 @@ a {
 .resume-multi-select-wrap .choices__list--multiple .choices__item {
   margin: 0;
   padding: 6px 10px;
-  border: 0;
+  border: 1px solid var(--primary) !important;
   border-radius: 999px;
-  color: var(--primary);
-  background: rgba(184, 31, 43, .1);
+  color: #fff !important;
+  background: var(--primary) !important;
   font-size: 12px;
   font-weight: 900;
 }
 
 .resume-multi-select-wrap .choices__button {
   margin-left: 7px;
-  border-left-color: rgba(184,31,43,.25);
+  border-left-color: rgba(255,255,255,.4) !important;
+  filter: brightness(0) invert(1);
+}
+
+.resume-multi-select-wrap .choices__list--multiple .choices__item.is-highlighted {
+  border-color: var(--primary-dark) !important;
+  background: var(--primary-dark) !important;
 }
 
 .resume-multi-select-wrap .choices__input {
