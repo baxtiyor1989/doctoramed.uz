@@ -67,6 +67,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
         Route::get('/deploy', [DeployController::class, 'index'])->name('deploy.index');
+        Route::get('/deploy/status', [DeployController::class, 'status'])->name('deploy.status');
         Route::post('/deploy', [DeployController::class, 'store'])->name('deploy.store');
         Route::get('/settings', [ContentController::class, 'settings'])->name('settings');
         Route::put('/settings', [ContentController::class, 'updateSettings'])->name('settings.update');

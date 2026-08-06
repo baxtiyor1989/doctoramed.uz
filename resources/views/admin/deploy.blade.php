@@ -32,22 +32,18 @@
         </div>
     </div>
 
-    @if ($status || $log)
-        <div class="card">
+        <div class="card" id="deploy-log-card" @if (!$status && !$log) style="display:none" @endif>
             <div class="card-header"><h5 class="card-title mb-0">Deploy log</h5></div>
             <div class="card-body">
-                @if ($status)
-                    @php($statusColor = ['success' => 'success', 'failed' => 'danger', 'running' => 'warning'][$status['status']] ?? 'secondary')
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <span class="badge bg-{{ $statusColor }}">{{ ['success' => 'Muvaffaqiyatli', 'failed' => 'Xatolik', 'running' => 'Bajarilmoqda'][$status['status']] ?? $status['status'] }}</span>
-                        <span>{{ $status['message'] ?? '' }}</span>
-                        @if (!empty($status['version']))<strong>{{ $status['version'] }}</strong>@endif
-                    </div>
-                @endif
-                @if ($log)<pre class="deploy-log mb-0">{{ $log }}</pre>@endif
+                @php($statusColor = ['success' => 'success', 'failed' => 'danger', 'running' => 'warning', 'queued' => 'info'][$status['status'] ?? ''] ?? 'secondary')
+                <div class="d-flex align-items-center gap-2 mb-3" id="deploy-status-row" @if (!$status) style="display:none" @endif>
+                    <span class="badge bg-{{ $statusColor }}" id="deploy-status-badge">{{ ['success' => 'Muvaffaqiyatli', 'failed' => 'Xatolik', 'running' => 'Bajarilmoqda', 'queued' => 'Kutilmoqda'][$status['status'] ?? ''] ?? ($status['status'] ?? '') }}</span>
+                    <span id="deploy-status-message">{{ $status['message'] ?? '' }}</span>
+                    <strong id="deploy-status-version">{{ $status['version'] ?? '' }}</strong>
+                </div>
+                <pre class="deploy-log mb-0" id="deploy-log">{{ $log }}</pre>
             </div>
         </div>
-    @endif
 @endsection
 
 @push('styles')
@@ -57,18 +53,98 @@
 @endpush
 
 @push('scripts')
+    <script src="{{ asset('admin-assets/assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script>
-        document.getElementById('deploy-form')?.addEventListener('submit', function (event) {
-            if (!confirm('Production saytini GitHub’dan yangilashni tasdiqlaysizmi?')) {
-                event.preventDefault();
-                return;
-            }
+        (() => {
+            const form = document.getElementById('deploy-form');
             const button = document.getElementById('deploy-button');
-            button.disabled = true;
-            button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Yangilanmoqda...';
-        });
-        @if (($status['status'] ?? null) === 'running')
-            window.setTimeout(() => window.location.reload(), 5000);
-        @endif
+            const card = document.getElementById('deploy-log-card');
+            const row = document.getElementById('deploy-status-row');
+            const badge = document.getElementById('deploy-status-badge');
+            const message = document.getElementById('deploy-status-message');
+            const version = document.getElementById('deploy-status-version');
+            const log = document.getElementById('deploy-log');
+            const labels = { queued: 'Kutilmoqda', running: 'Bajarilmoqda', success: 'Muvaffaqiyatli', failed: 'Xatolik' };
+            const colors = { queued: 'info', running: 'warning', success: 'success', failed: 'danger' };
+            let polling = {{ in_array($status['status'] ?? null, ['queued', 'running'], true) ? 'true' : 'false' }};
+            let completionShown = false;
+
+            function render(data) {
+                const state = data.status;
+                card.style.display = '';
+                if (state) {
+                    row.style.display = '';
+                    badge.className = `badge bg-${colors[state.status] || 'secondary'}`;
+                    badge.textContent = labels[state.status] || state.status;
+                    message.textContent = state.message || '';
+                    version.textContent = state.version || '';
+                }
+                log.textContent = data.log || '';
+                log.scrollTop = log.scrollHeight;
+
+                if (state && ['success', 'failed'].includes(state.status) && !completionShown) {
+                    completionShown = true;
+                    polling = false;
+                    button.disabled = false;
+                    button.innerHTML = '<i class="ri-github-line align-middle me-1"></i> GitHub’dan deploy qilish';
+                    Swal.fire({
+                        icon: state.status === 'success' ? 'success' : 'error',
+                        title: state.status === 'success' ? 'Deploy muvaffaqiyatli!' : 'Deployda xatolik!',
+                        text: state.message || '',
+                        confirmButtonText: 'Yopish',
+                        confirmButtonColor: '#405189'
+                    });
+                }
+            }
+
+            async function poll() {
+                if (!polling) return;
+                try {
+                    const response = await fetch(@json(route('admin.deploy.status')), { headers: { Accept: 'application/json' } });
+                    if (response.ok) render(await response.json());
+                } finally {
+                    if (polling) window.setTimeout(poll, 2000);
+                }
+            }
+
+            form?.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const confirmation = await Swal.fire({
+                    icon: 'question',
+                    title: 'Deploy boshlansinmi?',
+                    text: 'Production sayt GitHub’dan yangilanadi.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ha, boshlash',
+                    cancelButtonText: 'Bekor qilish',
+                    confirmButtonColor: '#405189'
+                });
+                if (!confirmation.isConfirmed) return;
+
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Yangilanmoqda...';
+                completionShown = false;
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { Accept: 'application/json' }
+                    });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || 'Deployni boshlashda xatolik yuz berdi.');
+                    polling = true;
+                    poll();
+                } catch (error) {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="ri-github-line align-middle me-1"></i> GitHub’dan deploy qilish';
+                    Swal.fire({ icon: 'error', title: 'Xatolik!', text: error.message, confirmButtonText: 'Yopish' });
+                }
+            });
+
+            if (polling) {
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Yangilanmoqda...';
+                poll();
+            }
+        })();
     </script>
 @endpush

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
@@ -25,13 +26,32 @@ class DeployController extends Controller
         ]);
     }
 
-    public function store(): RedirectResponse
+    public function status(): JsonResponse
+    {
+        $this->authorizeAdministrator();
+
+        return response()->json([
+            'status' => $this->readJson(storage_path('framework/deploy-status.json')),
+            'version' => File::exists(public_path('version.txt')) ? trim(File::get(public_path('version.txt'))) : null,
+            'log' => File::exists(storage_path('logs/deploy.log')) ? File::get(storage_path('logs/deploy.log')) : null,
+            'commit' => $this->gitValue(['rev-parse', '--short', 'HEAD']),
+        ]);
+    }
+
+    public function store(): RedirectResponse|JsonResponse
     {
         $this->authorizeAdministrator();
 
         try {
             $script = base_path('deploy.sh');
             abort_unless(File::exists($script), 500, 'deploy.sh fayli topilmadi.');
+
+            File::put(storage_path('framework/deploy-status.json'), json_encode([
+                'status' => 'queued',
+                'message' => 'Deploy ishga tushirilmoqda',
+                'version' => '',
+                'updated_at' => now()->format('Y-m-d H:i:s'),
+            ], JSON_UNESCAPED_UNICODE));
 
             $command = 'nohup bash '.escapeshellarg($script).' >/dev/null 2>&1 &';
             $process = Process::fromShellCommandline($command, base_path(), [
@@ -42,15 +62,26 @@ class DeployController extends Controller
             $process->setTimeout(10)->run();
 
             if (! $process->isSuccessful()) {
-                return back()->withErrors(['deploy' => 'deploy.sh jarayonini ishga tushirib bo‘lmadi.']);
+                return $this->deployResponse(false, 'deploy.sh jarayonini ishga tushirib bo‘lmadi.');
             }
 
-            return back()->with('status', 'Deploy jarayoni fonda ishga tushirildi. Natijani yangilab kuzating.');
+            return $this->deployResponse(true, 'Deploy jarayoni fonda ishga tushirildi.');
         } catch (Throwable $exception) {
             report($exception);
 
-            return back()->withErrors(['deploy' => 'Deployni ishga tushirishda xatolik yuz berdi.']);
+            return $this->deployResponse(false, 'Deployni ishga tushirishda xatolik yuz berdi.');
         }
+    }
+
+    private function deployResponse(bool $successful, string $message): RedirectResponse|JsonResponse
+    {
+        if (request()->expectsJson()) {
+            return response()->json(['successful' => $successful, 'message' => $message], $successful ? 202 : 500);
+        }
+
+        return $successful
+            ? back()->with('status', $message)
+            : back()->withErrors(['deploy' => $message]);
     }
 
     private function authorizeAdministrator(): void
