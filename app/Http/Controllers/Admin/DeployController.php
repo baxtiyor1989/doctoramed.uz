@@ -12,9 +12,13 @@ use Throwable;
 
 class DeployController extends Controller
 {
-    public function index(): View
+    public function index(): View|JsonResponse
     {
         $this->authorizeAdministrator();
+
+        if (request()->boolean('status')) {
+            return $this->status();
+        }
 
         return view('admin.deploy', [
             'branch' => config('deploy.branch'),
@@ -26,7 +30,7 @@ class DeployController extends Controller
         ]);
     }
 
-    public function status(): JsonResponse
+    private function status(): JsonResponse
     {
         $this->authorizeAdministrator();
 

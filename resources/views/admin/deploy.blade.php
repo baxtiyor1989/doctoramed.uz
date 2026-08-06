@@ -100,7 +100,7 @@
             async function poll() {
                 if (!polling) return;
                 try {
-                    const response = await fetch(@json(route('admin.deploy.status')), { headers: { Accept: 'application/json' } });
+                    const response = await fetch(@json(route('admin.deploy.index', ['status' => 1])), { headers: { Accept: 'application/json' } });
                     if (response.ok) render(await response.json());
                 } finally {
                     if (polling) window.setTimeout(poll, 2000);
