@@ -282,7 +282,7 @@ const bindServiceModalOpeners = () => {
       if (serviceModalTitle) serviceModalTitle.textContent = item.dataset.serviceTitle || "";
       if (serviceModalText) {
         const description = item.closest("[data-service-card]")?.querySelector("[data-service-full-description]");
-        serviceModalText.textContent = description?.textContent || item.dataset.serviceDescription || "";
+        serviceModalText.textContent = item.dataset.serviceDescription || description?.textContent || "";
       }
       selectedServiceForAppointment = item.dataset.serviceTitle || "";
       serviceModal?.classList.add("open");

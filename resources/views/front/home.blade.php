@@ -721,6 +721,6 @@
     </div>
   @endif
 
-  <script src="{{ asset('front-assets/script.js') }}"></script>
+  <script src="{{ asset('front-assets/script.js') }}?v={{ filemtime(public_path('front-assets/script.js')) }}"></script>
 </body>
 </html>

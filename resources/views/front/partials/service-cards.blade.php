@@ -16,6 +16,7 @@
       class="service-detail-link"
       data-service-open
       data-service-title="{{ $service->tr('title', $locale) }}"
+      data-service-description="{{ $service->tr('description', $locale) }}"
       data-service-id="{{ $service->id }}">
       {{ $detailsText ?? 'Batafsil' }} →
     </button>
