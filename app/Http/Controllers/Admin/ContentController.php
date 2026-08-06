@@ -184,6 +184,22 @@ class ContentController extends Controller
         ]);
     }
 
+    public function branchesVacancies(): View
+    {
+        return view('admin.content.branches-vacancies', [
+            'branches' => Branch::query()
+                ->withCount('vacancies')
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->get(),
+            'vacancies' => Vacancy::query()
+                ->with('branch')
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->get(),
+        ]);
+    }
+
     public function updateSettings(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -300,7 +316,11 @@ class ContentController extends Controller
         $data = $this->validatedData($request, $config, $resource);
         $config['model']::create($data);
 
-        return redirect()->route('admin.content.index', $resource)->with('status', 'Ma’lumot qo‘shildi.');
+        $route = in_array($resource, ['branches', 'vacancies'], true)
+            ? route('admin.branches-vacancies')
+            : route('admin.content.index', $resource);
+
+        return redirect($route)->with('status', 'Ma’lumot qo‘shildi.');
     }
 
     public function edit(string $resource, int $id): View
@@ -328,7 +348,11 @@ class ContentController extends Controller
 
         $item->update($data);
 
-        return redirect()->route('admin.content.index', $resource)->with('status', 'Ma’lumot yangilandi.');
+        $route = in_array($resource, ['branches', 'vacancies'], true)
+            ? route('admin.branches-vacancies')
+            : route('admin.content.index', $resource);
+
+        return redirect($route)->with('status', 'Ma’lumot yangilandi.');
     }
 
     public function destroy(string $resource, int $id): RedirectResponse

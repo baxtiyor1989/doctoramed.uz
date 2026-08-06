@@ -189,6 +189,12 @@
                                 @if ($newAppointmentsCount > 0)<span class="badge bg-danger ms-auto">{{ $newAppointmentsCount > 99 ? '99+' : $newAppointmentsCount }}</span>@endif
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ route('admin.resumes.index') }}">
+                                <i class="ri-file-user-line"></i> <span>Rezyumelar</span>
+                                @if ($newResumesCount > 0)<span class="badge bg-danger ms-auto">{{ $newResumesCount > 99 ? '99+' : $newResumesCount }}</span>@endif
+                            </a>
+                        </li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'services') }}"><i class="ri-service-line"></i> <span>Xizmatlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'about-slides') }}"><i class="ri-slideshow-line"></i> <span>Klinika slaydlari</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'doctors') }}"><i class="ri-user-heart-line"></i> <span>Shifokorlar</span></a></li>
@@ -196,13 +202,11 @@
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'articles') }}"><i class="ri-newspaper-line"></i> <span>Yangiliklar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'partners') }}"><i class="ri-building-line"></i> <span>Hamkorlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'hero-videos') }}"><i class="ri-youtube-line"></i> <span>Hero videolar</span></a></li>
-                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'vacancies') }}"><i class="ri-briefcase-line"></i> <span>Vakant lavozimlar</span></a></li>
-                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'branches') }}"><i class="ri-map-pin-line"></i> <span>Filiallar</span></a></li>
+                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.branches-vacancies') }}"><i class="ri-building-4-line"></i> <span>Filiallar va vakansiyalar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'appointment-types') }}"><i class="ri-stethoscope-line"></i> <span>Qabul yo‘nalishlari</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'regions') }}"><i class="ri-map-2-line"></i> <span>Viloyatlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'districts') }}"><i class="ri-map-pin-2-line"></i> <span>Tumanlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'menus') }}"><i class="ri-menu-3-line"></i> <span>Front menyular</span></a></li>
-                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.resumes.index') }}"><i class="ri-file-user-line"></i> <span>Rezyumelar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.users.index') }}"><i class="ri-user-settings-line"></i> <span>Foydalanuvchilar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.settings') }}"><i class="ri-settings-3-line"></i> <span>Asosiy sozlamalar</span></a></li>
                         @if (auth()->user()->role === 'administrator' && config('deploy.enabled', true) && in_array(request()->getHost(), config('deploy.allowed_hosts', ['doctoramed.uz', 'www.doctoramed.uz']), true))

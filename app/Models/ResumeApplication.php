@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['last_name', 'first_name', 'full_name', 'birth_date', 'region_id', 'district_id', 'region_district', 'address', 'branch_id', 'vacancy_id', 'phone', 'position', 'branch', 'message'])]
+#[Fillable(['last_name', 'first_name', 'full_name', 'birth_date', 'region_id', 'district_id', 'region_district', 'address', 'branch_id', 'vacancy_id', 'phone', 'position', 'branch', 'message', 'viewed_at'])]
 class ResumeApplication extends Model
 {
     protected function casts(): array
     {
-        return ['birth_date' => 'date'];
+        return ['birth_date' => 'date', 'viewed_at' => 'datetime'];
     }
 
     public function region(): BelongsTo

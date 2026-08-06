@@ -27,6 +27,7 @@
                             <tr>
                                 <td>
                                     <strong>{{ $item->full_name }}</strong>
+                                    @if (!$item->viewed_at)<span class="badge bg-danger ms-1">Yangi</span>@endif
                                     @if ($item->message)
                                         <div class="text-muted small mt-1">{{ $item->message }}</div>
                                     @endif
