@@ -74,6 +74,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/deploy', [DeployController::class, 'store'])->name('deploy.store');
         Route::get('/settings', [ContentController::class, 'settings'])->name('settings');
         Route::get('/branches-vacancies', [ContentController::class, 'branchesVacancies'])->name('branches-vacancies');
+        Route::get('/regions-districts', [ContentController::class, 'regionsDistricts'])->name('regions-districts');
         Route::put('/settings', [ContentController::class, 'updateSettings'])->name('settings.update');
         Route::post('/clear-cache', [ContentController::class, 'clearCache'])->name('clear-cache');
         Route::get('/resumes', [AdminResumeApplicationController::class, 'index'])->name('resumes.index');

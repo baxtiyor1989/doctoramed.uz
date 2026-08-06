@@ -204,8 +204,7 @@
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'hero-videos') }}"><i class="ri-youtube-line"></i> <span>Hero videolar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.branches-vacancies') }}"><i class="ri-building-4-line"></i> <span>Filiallar va vakansiyalar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'appointment-types') }}"><i class="ri-stethoscope-line"></i> <span>Qabul yo‘nalishlari</span></a></li>
-                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'regions') }}"><i class="ri-map-2-line"></i> <span>Viloyatlar</span></a></li>
-                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'districts') }}"><i class="ri-map-pin-2-line"></i> <span>Tumanlar</span></a></li>
+                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.regions-districts') }}"><i class="ri-map-2-line"></i> <span>Viloyatlar va tumanlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'menus') }}"><i class="ri-menu-3-line"></i> <span>Front menyular</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.users.index') }}"><i class="ri-user-settings-line"></i> <span>Foydalanuvchilar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.settings') }}"><i class="ri-settings-3-line"></i> <span>Asosiy sozlamalar</span></a></li>

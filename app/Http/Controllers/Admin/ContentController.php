@@ -200,6 +200,22 @@ class ContentController extends Controller
         ]);
     }
 
+    public function regionsDistricts(): View
+    {
+        return view('admin.content.regions-districts', [
+            'regions' => Region::query()
+                ->withCount('districts')
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->get(),
+            'districts' => District::query()
+                ->with('region')
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->get(),
+        ]);
+    }
+
     public function updateSettings(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -316,9 +332,11 @@ class ContentController extends Controller
         $data = $this->validatedData($request, $config, $resource);
         $config['model']::create($data);
 
-        $route = in_array($resource, ['branches', 'vacancies'], true)
-            ? route('admin.branches-vacancies')
-            : route('admin.content.index', $resource);
+        $route = match (true) {
+            in_array($resource, ['branches', 'vacancies'], true) => route('admin.branches-vacancies'),
+            in_array($resource, ['regions', 'districts'], true) => route('admin.regions-districts'),
+            default => route('admin.content.index', $resource),
+        };
 
         return redirect($route)->with('status', 'Ma’lumot qo‘shildi.');
     }
@@ -348,9 +366,11 @@ class ContentController extends Controller
 
         $item->update($data);
 
-        $route = in_array($resource, ['branches', 'vacancies'], true)
-            ? route('admin.branches-vacancies')
-            : route('admin.content.index', $resource);
+        $route = match (true) {
+            in_array($resource, ['branches', 'vacancies'], true) => route('admin.branches-vacancies'),
+            in_array($resource, ['regions', 'districts'], true) => route('admin.regions-districts'),
+            default => route('admin.content.index', $resource),
+        };
 
         return redirect($route)->with('status', 'Ma’lumot yangilandi.');
     }
@@ -358,7 +378,17 @@ class ContentController extends Controller
     public function destroy(string $resource, int $id): RedirectResponse
     {
         $config = $this->resource($resource);
-        $config['model']::findOrFail($id)->delete();
+        $item = $config['model']::findOrFail($id);
+
+        if ($resource === 'regions' && $item->districts()->exists()) {
+            return back()->withErrors(['delete' => 'Bu viloyatga tumanlar biriktirilgan. Avval tumanlarni o‘chiring yoki boshqa viloyatga o‘tkazing.']);
+        }
+
+        if ($resource === 'branches' && $item->vacancies()->exists()) {
+            return back()->withErrors(['delete' => 'Bu filialga vakant lavozimlar biriktirilgan. Avval vakant lavozimlarni o‘chiring yoki boshqa filialga o‘tkazing.']);
+        }
+
+        $item->delete();
 
         return back()->with('status', 'Ma’lumot o‘chirildi.');
     }

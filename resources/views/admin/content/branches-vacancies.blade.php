@@ -25,10 +25,14 @@
                                         <td><span class="badge bg-{{ $branch->is_active ? 'success' : 'secondary' }}">{{ $branch->is_active ? 'Faol' : 'O‘chiq' }}</span></td>
                                         <td class="text-end text-nowrap">
                                             <a href="{{ route('admin.content.edit', ['branches', $branch]) }}" class="btn btn-sm btn-primary">Tahrirlash</a>
-                                            <form method="POST" action="{{ route('admin.content.destroy', ['branches', $branch]) }}" class="d-inline" onsubmit="return confirm('Filialni o‘chirasizmi? Unga biriktirilgan vakansiyalar biriktirilmagan holatga o‘tadi.')">
-                                                @csrf @method('DELETE')
-                                                <button class="btn btn-sm btn-danger">O‘chirish</button>
-                                            </form>
+                                            @if ($branch->vacancies_count > 0)
+                                                <button type="button" class="btn btn-sm btn-danger" disabled title="Avval filialga tegishli vakant lavozimlarni o‘chiring yoki boshqa filialga o‘tkazing">O‘chirish</button>
+                                            @else
+                                                <form method="POST" action="{{ route('admin.content.destroy', ['branches', $branch]) }}" class="d-inline" onsubmit="return confirm('Filialni o‘chirasizmi?')">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-sm btn-danger">O‘chirish</button>
+                                                </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
