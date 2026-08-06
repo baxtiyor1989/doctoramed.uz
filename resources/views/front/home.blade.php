@@ -17,6 +17,7 @@
       'resume_branch_placeholder' => 'Filialni tanlang',
       'resume_message' => 'Qo‘shimcha izoh',
       'resume_submit' => 'Yuborish',
+      'resume_empty' => 'Hozircha vakant lavozimlar mavjud emas.',
       'appointment_birth_date' => 'Tug‘ilgan kun, oy, yili',
       'appointment_last_name' => 'Familiya', 'appointment_first_name' => 'Ism',
       'appointment_region' => 'Viloyati, tumani',
@@ -45,6 +46,7 @@
       'resume_branch_placeholder' => 'Выберите филиал',
       'resume_message' => 'Дополнительный комментарий',
       'resume_submit' => 'Отправить',
+      'resume_empty' => 'В настоящее время открытых вакансий нет.',
       'appointment_birth_date' => 'Дата рождения',
       'appointment_last_name' => 'Фамилия', 'appointment_first_name' => 'Имя',
       'appointment_region' => 'Область, район',
@@ -73,6 +75,7 @@
       'resume_branch_placeholder' => 'Select a branch',
       'resume_message' => 'Additional note',
       'resume_submit' => 'Send',
+      'resume_empty' => 'There are currently no open vacancies.',
       'appointment_birth_date' => 'Date of birth',
       'appointment_last_name' => 'Last name', 'appointment_first_name' => 'First name',
       'appointment_region' => 'Region, district',
@@ -643,51 +646,48 @@
         <div class="resume-success">{{ session('resume_status') }}</div>
       @endif
 
+      @if ($vacancies->isEmpty())
+        <div class="resume-empty-state">
+          <span aria-hidden="true">✚</span>
+          <p>{{ $ui['resume_empty'] }}</p>
+        </div>
+      @else
       <form method="POST" action="{{ route('resume-applications.store') }}" class="resume-form">
         @csrf
-        <label>
-          <span>{{ $ui['resume_name'] }}</span>
-          <input type="text" name="full_name" value="{{ old('full_name') }}" data-uppercase-input required>
-          @error('full_name')<small>{{ $message }}</small>@enderror
-        </label>
-        <label>
-          <span>{{ $ui['resume_phone'] }}</span>
-          <input type="tel" name="phone" value="{{ old('phone') }}" placeholder="+998 __ ___ __ __" inputmode="tel" data-phone-mask required>
-          @error('phone')<small>{{ $message }}</small>@enderror
-        </label>
-        <label>
-          <span>{{ $ui['resume_position'] }}</span>
-          <span class="resume-select-wrap">
-            <select name="position" required>
-              <option value="">{{ $ui['resume_position_placeholder'] }}</option>
-              @foreach ($vacancies as $vacancy)
-                @php($vacancyTitle = $vacancy->tr('title', $locale))
-                <option value="{{ $vacancyTitle }}" @selected(old('position') === $vacancyTitle)>{{ $vacancyTitle }}</option>
-              @endforeach
-            </select>
-          </span>
-          @error('position')<small>{{ $message }}</small>@enderror
-        </label>
+        <label><span>{{ $ui['appointment_last_name'] }}</span><input type="text" name="resume_last_name" value="{{ old('resume_last_name') }}" data-uppercase-input required>@error('resume_last_name')<small>{{ $message }}</small>@enderror</label>
+        <label><span>{{ $ui['appointment_first_name'] }}</span><input type="text" name="resume_first_name" value="{{ old('resume_first_name') }}" data-uppercase-input required>@error('resume_first_name')<small>{{ $message }}</small>@enderror</label>
+        <label><span>{{ $ui['appointment_birth_date'] }}</span><input type="date" name="resume_birth_date" value="{{ old('resume_birth_date') }}" required>@error('resume_birth_date')<small>{{ $message }}</small>@enderror</label>
+        <label><span>{{ $ui['resume_phone'] }}</span><input type="tel" name="resume_phone" value="{{ old('resume_phone') }}" placeholder="+998 __ ___ __ __" inputmode="tel" data-phone-mask required>@error('resume_phone')<small>{{ $message }}</small>@enderror</label>
+        @include('front.partials.resume-location-fields')
+        <label class="resume-form-wide"><span>{{ $ui['appointment_address'] }}</span><input type="text" name="resume_address" value="{{ old('resume_address') }}" placeholder="{{ $ui['appointment_address_placeholder'] }}" maxlength="500" required>@error('resume_address')<small>{{ $message }}</small>@enderror</label>
         <label>
           <span>{{ $ui['resume_branch'] }}</span>
-          <span class="resume-select-wrap">
-            <select name="branch" required>
+          <span class="resume-location-select-wrap">
+            <select name="resume_branch_id" data-resume-branch-select required>
               <option value="">{{ $ui['resume_branch_placeholder'] }}</option>
               @foreach ($branches as $branch)
-                @php($branchTitle = $branch->tr('title', $locale))
-                <option value="{{ $branchTitle }}" @selected(old('branch') === $branchTitle)>{{ $branchTitle }}</option>
+                <option value="{{ $branch->id }}" @selected((string) old('resume_branch_id') === (string) $branch->id)>{{ $branch->tr('title', $locale) }}</option>
               @endforeach
             </select>
           </span>
-          @error('branch')<small>{{ $message }}</small>@enderror
+          @error('resume_branch_id')<small>{{ $message }}</small>@enderror
         </label>
-        <label class="resume-form-wide">
-          <span>{{ $ui['resume_message'] }}</span>
-          <textarea name="message" rows="3" required>{{ old('message') }}</textarea>
-          @error('message')<small>{{ $message }}</small>@enderror
+        <label data-resume-vacancy-field hidden>
+          <span>{{ $ui['resume_position'] }}</span>
+          <span class="resume-location-select-wrap">
+            <select name="resume_vacancy_id" data-resume-vacancy-select disabled>
+              <option value="">{{ $ui['resume_position_placeholder'] }}</option>
+              @foreach ($vacancies as $vacancy)
+                <option value="{{ $vacancy->id }}" data-branch-id="{{ $vacancy->branch_id }}" @selected((string) old('resume_vacancy_id') === (string) $vacancy->id)>{{ $vacancy->tr('title', $locale) }}</option>
+              @endforeach
+            </select>
+          </span>
+          @error('resume_vacancy_id')<small>{{ $message }}</small>@enderror
         </label>
+        @include('front.partials.resume-captcha')
         <button type="submit" class="btn btn-primary resume-form-wide">{{ $ui['resume_submit'] }}</button>
       </form>
+      @endif
     </div>
   </div>
 

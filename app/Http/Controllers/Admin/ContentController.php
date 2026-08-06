@@ -120,6 +120,7 @@ class ContentController extends Controller
             'title' => 'Vakant lavozimlar',
             'model' => Vacancy::class,
             'fields' => [
+                'branch_id' => ['label' => 'Qaysi filialga tegishli', 'type' => 'select', 'required' => true, 'options' => []],
                 'title' => ['label' => 'Lavozim nomi', 'type' => 'text', 'required' => true, 'translatable' => true],
                 'sort_order' => ['label' => 'Tartib', 'type' => 'number'],
                 'is_active' => ['label' => 'Faol', 'type' => 'checkbox'],
@@ -274,6 +275,10 @@ class ContentController extends Controller
             $query->with('region');
         }
 
+        if ($resource === 'vacancies') {
+            $query->with('branch');
+        }
+
         $items = $query->get();
 
         return view('admin.content.index', compact('resource', 'config', 'items'));
@@ -370,6 +375,14 @@ class ContentController extends Controller
                 ->all();
         }
 
+        if ($resource === 'vacancies') {
+            $config['fields']['branch_id']['options'] = Branch::query()
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->pluck('title', 'id')
+                ->all();
+        }
+
         return $config;
     }
 
@@ -436,6 +449,10 @@ class ContentController extends Controller
 
         if ($resource === 'districts') {
             $rules['region_id'] = ['required', 'exists:regions,id'];
+        }
+
+        if ($resource === 'vacancies') {
+            $rules['branch_id'] = ['required', 'exists:branches,id'];
         }
 
         $data = $request->validate($rules, [

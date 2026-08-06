@@ -12,7 +12,7 @@ class ResumeApplicationController extends Controller
     public function index(): View
     {
         return view('admin.resumes.index', [
-            'items' => ResumeApplication::query()->latest()->paginate(20),
+            'items' => ResumeApplication::query()->with(['region', 'district', 'branchRelation', 'vacancy'])->latest()->paginate(20),
         ]);
     }
 

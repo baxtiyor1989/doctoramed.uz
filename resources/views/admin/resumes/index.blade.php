@@ -15,8 +15,9 @@
                         <tr>
                             <th>Ism familiya</th>
                             <th>Telefon</th>
-                            <th>Lavozim</th>
-                            <th>Filial</th>
+                            <th>Tug‘ilgan sana</th>
+                            <th>Viloyat, tuman</th>
+                            <th>Manzil</th>
                             <th>Sana</th>
                             <th class="text-end">Amallar</th>
                         </tr>
@@ -31,8 +32,9 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->phone }}</td>
-                                <td>{{ $item->position ?: '-' }}</td>
-                                <td>{{ $item->branch ?: '-' }}</td>
+                                <td>{{ $item->birth_date?->format('d.m.Y') ?: '—' }}</td>
+                                <td>{{ $item->region_district ?: '—' }}</td>
+                                <td>{{ $item->address ?: '—' }}</td>
                                 <td>{{ $item->created_at->format('d.m.Y H:i') }}</td>
                                 <td class="text-end">
                                     <form method="POST" action="{{ route('admin.resumes.destroy', $item) }}" onsubmit="return confirm('O‘chirasizmi?')">
@@ -44,7 +46,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted">Rezyume yuborilmagan.</td>
+                                <td colspan="7" class="text-center text-muted">Ma’lumot yuborilmagan.</td>
                             </tr>
                         @endforelse
                     </tbody>

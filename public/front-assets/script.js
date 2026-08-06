@@ -392,6 +392,34 @@ document.querySelectorAll("[data-region-select]").forEach((regionSelect) => {
   updateDistricts(false);
 });
 
+document.querySelectorAll("[data-resume-branch-select]").forEach((branchSelect) => {
+  const form = branchSelect.closest("form");
+  const vacancyField = form?.querySelector("[data-resume-vacancy-field]");
+  const vacancySelect = form?.querySelector("[data-resume-vacancy-select]");
+  if (!vacancyField || !vacancySelect) return;
+
+  const updateVacancies = (resetValue = false) => {
+    const branchId = branchSelect.value;
+    const options = Array.from(vacancySelect.options).slice(1);
+    let vacancyCount = 0;
+
+    options.forEach((option) => {
+      const matches = branchId !== "" && option.dataset.branchId === branchId;
+      option.hidden = !matches;
+      option.disabled = !matches;
+      if (matches) vacancyCount += 1;
+    });
+
+    if (resetValue) vacancySelect.value = "";
+    vacancyField.hidden = vacancyCount === 0;
+    vacancySelect.disabled = vacancyCount === 0;
+    vacancySelect.required = vacancyCount > 0;
+  };
+
+  branchSelect.addEventListener("change", () => updateVacancies(true));
+  updateVacancies(false);
+});
+
 appointmentOpenItems.forEach((item) => {
   item.addEventListener("click", () => {
     setAppointmentType(item.dataset.appointmentType || "");
@@ -590,7 +618,7 @@ document.querySelectorAll("[data-appointment-captcha-refresh]").forEach((button)
   button.addEventListener("click", () => {
     const field = button.closest(".appointment-captcha-field");
     const image = field?.querySelector("[data-appointment-captcha-image]");
-    const input = field?.querySelector('input[name="appointment_captcha"]');
+    const input = field?.querySelector('input[name$="_captcha"]');
     if (image) image.src = `${image.src.split("?")[0]}?t=${Date.now()}`;
     if (input) {
       input.value = "";

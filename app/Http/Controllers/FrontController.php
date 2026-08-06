@@ -40,8 +40,12 @@ class FrontController extends Controller
             'testimonials' => Testimonial::query()->where('is_active', true)->orderBy('sort_order')->get(),
             'articles' => $this->articleQuery()->limit(4)->get(),
             'partners' => Partner::query()->where('is_active', true)->orderBy('sort_order')->get(),
-            'vacancies' => Vacancy::query()->where('is_active', true)->orderBy('sort_order')->get(),
-            'branches' => Branch::query()->where('is_active', true)->orderBy('sort_order')->get(),
+            'vacancies' => Vacancy::query()->where('is_active', true)->whereNotNull('branch_id')->orderBy('sort_order')->get(),
+            'branches' => Branch::query()
+                ->where('is_active', true)
+                ->whereHas('vacancies', fn ($query) => $query->where('is_active', true))
+                ->orderBy('sort_order')
+                ->get(),
             'appointmentTypes' => AppointmentType::query()->where('is_active', true)->orderBy('sort_order')->get(),
             'regions' => $this->appointmentRegions(),
             'heroVideos' => $heroVideos,

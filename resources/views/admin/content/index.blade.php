@@ -138,6 +138,9 @@
                                         @if ($resource === 'districts')
                                             <small class="text-muted">Viloyat: {{ $item->region?->title ?? 'Topilmadi' }}</small>
                                         @endif
+                                        @if ($resource === 'vacancies')
+                                            <small class="text-muted">Filial: {{ $item->branch?->title ?? 'Biriktirilmagan' }}</small>
+                                        @endif
                                     </td>
                                     <td>{{ $item->sort_order }}</td>
                                     <td>

@@ -5472,6 +5472,34 @@ a {
   gap: 14px;
 }
 
+.resume-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 34px 24px;
+  border: 1px dashed rgba(184,31,43,.32);
+  border-radius: 18px;
+  color: #58667a;
+  background: rgba(184,31,43,.045);
+  text-align: center;
+}
+
+.resume-empty-state span {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--primary);
+  font-size: 25px;
+}
+
+.resume-empty-state p {
+  margin: 0;
+  font-weight: 800;
+}
+
 .resume-form label {
   display: grid;
   gap: 7px;

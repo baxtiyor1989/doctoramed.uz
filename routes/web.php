@@ -11,6 +11,7 @@ use App\Http\Controllers\AppointmentApplicationController;
 use App\Http\Controllers\AppointmentCaptchaController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ResumeApplicationController;
+use App\Http\Controllers\ResumeCaptchaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -56,6 +57,7 @@ Route::get('/{locale}', FrontController::class)
     ->whereIn('locale', ['uz', 'ru', 'en'])
     ->name('front.locale');
 Route::post('/resume-applications', [ResumeApplicationController::class, 'store'])->name('resume-applications.store');
+Route::get('/resume-captcha', ResumeCaptchaController::class)->name('resume.captcha');
 Route::post('/appointment-applications', [AppointmentApplicationController::class, 'store'])->name('appointment-applications.store');
 Route::get('/appointment-captcha', AppointmentCaptchaController::class)->name('appointment.captcha');
 
