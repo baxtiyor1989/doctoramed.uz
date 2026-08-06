@@ -18,6 +18,7 @@ class DeployController extends Controller
         return view('admin.deploy', [
             'branch' => config('deploy.branch'),
             'remote' => config('deploy.remote'),
+            'repository' => config('deploy.repository'),
             'commit' => $this->gitValue(['rev-parse', '--short', 'HEAD']),
             'deployed' => $this->deploymentResult(),
         ]);
@@ -37,7 +38,9 @@ class DeployController extends Controller
 
         $remote = (string) config('deploy.remote');
         $branch = (string) config('deploy.branch');
+        $repository = (string) config('deploy.repository');
         $commands = [
+            ['label' => 'GitHub repository manzili tekshirilmoqda', 'command' => ['git', 'remote', 'set-url', $remote, $repository]],
             ['label' => "GitHub holati olinmoqda ({$remote}/{$branch})", 'command' => ['git', 'fetch', $remote, $branch]],
             ['label' => 'Kod yangilanmoqda', 'command' => ['git', 'merge', '--ff-only', "{$remote}/{$branch}"]],
             ['label' => 'Composer paketlari o‘rnatilmoqda', 'command' => ['composer', 'install', '--no-dev', '--no-interaction', '--prefer-dist', '--optimize-autoloader']],

@@ -16,8 +16,9 @@
     <div class="card">
         <div class="card-header"><h5 class="card-title mb-0">Production deploy</h5></div>
         <div class="card-body">
-            <p class="text-muted">Kod <code>{{ $remote }}/{{ $branch }}</code> branchidan olinadi, Composer, NPM build, migratsiya va Laravel keshlari yangilanadi.</p>
+            <p class="text-muted">Kod <a href="{{ preg_replace('/\.git$/', '', $repository) }}" target="_blank" rel="noopener noreferrer">{{ preg_replace('/\.git$/', '', $repository) }}</a> repositorysining <code>{{ $branch }}</code> branchidan olinadi, Composer, NPM build, migratsiya va Laravel keshlari yangilanadi.</p>
             <div class="bg-light rounded p-3 mb-3 font-monospace small">
+                <div>Repository: {{ $repository }}</div>
                 <div>Branch: {{ $branch }}</div>
                 <div>Joriy commit: {{ $commit }}</div>
                 @if ($deployed)
