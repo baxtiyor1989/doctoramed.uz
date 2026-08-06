@@ -183,6 +183,12 @@
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span>Menu</span></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.dashboard') }}"><i class="ri-dashboard-2-line"></i> <span>Dashboard</span></a></li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ route('admin.appointments.index') }}">
+                                <i class="ri-calendar-check-line"></i> <span>Qabul so‘rovlari</span>
+                                @if ($newAppointmentsCount > 0)<span class="badge bg-danger ms-auto">{{ $newAppointmentsCount > 99 ? '99+' : $newAppointmentsCount }}</span>@endif
+                            </a>
+                        </li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'services') }}"><i class="ri-service-line"></i> <span>Xizmatlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'about-slides') }}"><i class="ri-slideshow-line"></i> <span>Klinika slaydlari</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'doctors') }}"><i class="ri-user-heart-line"></i> <span>Shifokorlar</span></a></li>
@@ -196,7 +202,6 @@
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'regions') }}"><i class="ri-map-2-line"></i> <span>Viloyatlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'districts') }}"><i class="ri-map-pin-2-line"></i> <span>Tumanlar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.content.index', 'menus') }}"><i class="ri-menu-3-line"></i> <span>Front menyular</span></a></li>
-                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.appointments.index') }}"><i class="ri-calendar-check-line"></i> <span>Qabul so‘rovlari</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.resumes.index') }}"><i class="ri-file-user-line"></i> <span>Rezyumelar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.users.index') }}"><i class="ri-user-settings-line"></i> <span>Foydalanuvchilar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.settings') }}"><i class="ri-settings-3-line"></i> <span>Asosiy sozlamalar</span></a></li>

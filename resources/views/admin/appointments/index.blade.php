@@ -21,7 +21,10 @@
                     <tbody>
                         @forelse ($items as $item)
                             <tr>
-                                <td>{{ $item->full_name }}</td>
+                                <td>
+                                    {{ $item->full_name }}
+                                    @if (!$item->viewed_at)<span class="badge bg-danger ms-1">Yangi</span>@endif
+                                </td>
                                 <td>{{ optional($item->birth_date)->format('d.m.Y') }}</td>
                                 <td>{{ $item->region_district }}</td>
                                 <td><a href="tel:{{ preg_replace('/\D+/', '', $item->phone) }}">{{ $item->phone }}</a></td>
