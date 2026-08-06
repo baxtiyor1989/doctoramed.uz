@@ -40,11 +40,12 @@ class AppointmentLocationTest extends TestCase
     private function payload(Region $region): array
     {
         return [
-            'appointment_full_name' => 'Test Bemor',
+            'appointment_last_name' => 'Testov',
+            'appointment_first_name' => 'Bemor',
             'appointment_birth_date' => '1990-01-01',
             'appointment_region_id' => $region->id,
             'appointment_phone' => '+998 90 123 45 67',
-            'appointment_type' => 'Test yo‘nalish',
+            'appointment_types' => ['Test yo‘nalish'],
             'appointment_locale' => 'uz',
         ];
     }

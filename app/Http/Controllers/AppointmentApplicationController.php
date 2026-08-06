@@ -22,7 +22,8 @@ class AppointmentApplicationController extends Controller
             ->find($request->integer('appointment_region_id'));
 
         $data = $request->validate([
-            'appointment_full_name' => ['required', 'string', 'max:255'],
+            'appointment_last_name' => ['required', 'string', 'max:120'],
+            'appointment_first_name' => ['required', 'string', 'max:120'],
             'appointment_birth_date' => ['required', 'date', 'before:today'],
             'appointment_region_id' => ['required', Rule::exists('regions', 'id')->where('is_active', true)],
             'appointment_district_id' => [
@@ -33,7 +34,8 @@ class AppointmentApplicationController extends Controller
                     ->where('is_active', true)),
             ],
             'appointment_phone' => ['required', 'regex:/^\+998\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/'],
-            'appointment_type' => ['required', 'string', 'max:255'],
+            'appointment_types' => ['required', 'array', 'min:1'],
+            'appointment_types.*' => ['required', 'string', 'max:255', 'distinct'],
         ]);
 
         $district = filled($data['appointment_district_id'] ?? null)
@@ -46,14 +48,19 @@ class AppointmentApplicationController extends Controller
             ->filter()
             ->implode(', ');
 
+        $lastName = mb_strtoupper($data['appointment_last_name'], 'UTF-8');
+        $firstName = mb_strtoupper($data['appointment_first_name'], 'UTF-8');
+
         $application = AppointmentApplication::create([
-            'full_name' => mb_strtoupper($data['appointment_full_name'], 'UTF-8'),
+            'last_name' => $lastName,
+            'first_name' => $firstName,
+            'full_name' => $lastName.' '.$firstName,
             'birth_date' => $data['appointment_birth_date'],
             'region_id' => $region?->id,
             'district_id' => $district?->id,
             'region_district' => $regionDistrict,
             'phone' => $data['appointment_phone'],
-            'appointment_type' => $data['appointment_type'],
+            'appointment_type' => implode(', ', $data['appointment_types']),
         ]);
 
         try {

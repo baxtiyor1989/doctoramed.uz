@@ -18,10 +18,11 @@
       'resume_message' => 'Qo‘shimcha izoh',
       'resume_submit' => 'Yuborish',
       'appointment_birth_date' => 'Tug‘ilgan kun, oy, yili',
+      'appointment_last_name' => 'Familiya', 'appointment_first_name' => 'Ism',
       'appointment_region' => 'Viloyati, tumani',
       'region' => 'Viloyat', 'region_placeholder' => 'Viloyatni tanlang', 'district' => 'Tuman', 'district_placeholder' => 'Tumanni tanlang',
-      'appointment_type' => 'Kimga ko‘rinishi yoki qaysi tekshiruvga tushishi',
-      'appointment_type_placeholder' => 'Yo‘nalishni tanlang',
+      'appointment_type' => 'Tekshiruvlar',
+      'appointment_type_placeholder' => 'Tekshiruvlarni tanlang',
       'appointment_status_title' => 'Qabulga yozilish',
       'all_doctors' => 'Barcha shifokorlar', 'clinic' => 'Klinika', 'team' => 'Bizning jamoa', 'close' => 'Yopish', 'hide' => 'Yopish', 'menu' => 'Menu', 'doctor_profile' => 'Shifokor profili', 'category' => 'Toifa', 'education' => 'Ta’lim va malaka', 'schedule' => 'Ish jadvali', 'experience_label' => 'Tajriba',
     ],
@@ -42,10 +43,11 @@
       'resume_message' => 'Дополнительный комментарий',
       'resume_submit' => 'Отправить',
       'appointment_birth_date' => 'Дата рождения',
+      'appointment_last_name' => 'Фамилия', 'appointment_first_name' => 'Имя',
       'appointment_region' => 'Область, район',
       'region' => 'Область', 'region_placeholder' => 'Выберите область', 'district' => 'Район', 'district_placeholder' => 'Выберите район',
-      'appointment_type' => 'К кому записаться или какое обследование',
-      'appointment_type_placeholder' => 'Выберите направление',
+      'appointment_type' => 'Обследования',
+      'appointment_type_placeholder' => 'Выберите обследования',
       'appointment_status_title' => 'Запись на прием',
       'all_doctors' => 'Все врачи', 'clinic' => 'Клиника', 'team' => 'Наша команда', 'close' => 'Закрыть', 'hide' => 'Закрыть', 'menu' => 'Меню', 'doctor_profile' => 'Профиль врача', 'category' => 'Категория', 'education' => 'Образование и квалификация', 'schedule' => 'График работы', 'experience_label' => 'Опыт',
     ],
@@ -66,10 +68,11 @@
       'resume_message' => 'Additional note',
       'resume_submit' => 'Send',
       'appointment_birth_date' => 'Date of birth',
+      'appointment_last_name' => 'Last name', 'appointment_first_name' => 'First name',
       'appointment_region' => 'Region, district',
       'region' => 'Region', 'region_placeholder' => 'Select a region', 'district' => 'District', 'district_placeholder' => 'Select a district',
-      'appointment_type' => 'Doctor or examination',
-      'appointment_type_placeholder' => 'Select a direction',
+      'appointment_type' => 'Examinations',
+      'appointment_type_placeholder' => 'Select examinations',
       'appointment_status_title' => 'Book appointment',
       'all_doctors' => 'All doctors', 'clinic' => 'Clinic', 'team' => 'Our team', 'close' => 'Close', 'hide' => 'Close', 'menu' => 'Menu', 'doctor_profile' => 'Doctor profile', 'category' => 'Category', 'education' => 'Education and qualifications', 'schedule' => 'Work schedule', 'experience_label' => 'Experience',
     ],
@@ -583,37 +586,33 @@
 
       <form method="POST" action="{{ route('appointment-applications.store') }}" class="resume-form">
         @csrf
-        <label>
-          <span>{{ $ui['resume_name'] }}</span>
-          <input type="text" name="appointment_full_name" value="{{ old('appointment_full_name') }}" data-uppercase-input required>
-          @error('appointment_full_name')<small>{{ $message }}</small>@enderror
-        </label>
+        <label><span>{{ $ui['appointment_last_name'] }}</span><input type="text" name="appointment_last_name" value="{{ old('appointment_last_name') }}" data-uppercase-input required>@error('appointment_last_name')<small>{{ $message }}</small>@enderror</label>
+        <label><span>{{ $ui['appointment_first_name'] }}</span><input type="text" name="appointment_first_name" value="{{ old('appointment_first_name') }}" data-uppercase-input required>@error('appointment_first_name')<small>{{ $message }}</small>@enderror</label>
         <label>
           <span>{{ $ui['appointment_birth_date'] }}</span>
           <input type="date" name="appointment_birth_date" value="{{ old('appointment_birth_date') }}" required>
           @error('appointment_birth_date')<small>{{ $message }}</small>@enderror
         </label>
-        @include('front.partials.appointment-location-fields', [
-          'regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'],
-          'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder'],
-        ])
         <label>
           <span>{{ $ui['resume_phone'] }}</span>
           <input type="tel" name="appointment_phone" value="{{ old('appointment_phone') }}" placeholder="+998 __ ___ __ __" inputmode="tel" data-phone-mask required>
           @error('appointment_phone')<small>{{ $message }}</small>@enderror
         </label>
+        @include('front.partials.appointment-location-fields', [
+          'regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'],
+          'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder'],
+        ])
         <label class="resume-form-wide">
           <span>{{ $ui['appointment_type'] }}</span>
           <span class="resume-select-wrap">
-            <select name="appointment_type" required data-appointment-type-select>
-              <option value="">{{ $ui['appointment_type_placeholder'] }}</option>
+            <select name="appointment_types[]" multiple required data-appointment-type-select data-placeholder="{{ $ui['appointment_type_placeholder'] }}">
               @foreach ($appointmentTypes as $appointmentType)
                 @php($appointmentTypeTitle = $appointmentType->tr('title', $locale))
-                <option value="{{ $appointmentTypeTitle }}" @selected(old('appointment_type') === $appointmentTypeTitle)>{{ $appointmentTypeTitle }}</option>
+                <option value="{{ $appointmentTypeTitle }}" @selected(in_array($appointmentTypeTitle, (array) old('appointment_types', []), true))>{{ $appointmentTypeTitle }}</option>
               @endforeach
             </select>
           </span>
-          @error('appointment_type')<small>{{ $message }}</small>@enderror
+          @error('appointment_types')<small>{{ $message }}</small>@enderror
         </label>
         <button type="submit" class="btn btn-primary resume-form-wide">{{ $ui['resume_submit'] }}</button>
       </form>

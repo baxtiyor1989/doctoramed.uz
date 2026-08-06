@@ -327,7 +327,13 @@ const setAppointmentType = (value) => {
     select.appendChild(option);
   }
 
-  select.value = value;
+  if (select.multiple) {
+    Array.from(select.options).forEach((option) => {
+      if (option.value === value) option.selected = true;
+    });
+  } else {
+    select.value = value;
+  }
   select.dispatchEvent(new Event("change", { bubbles: true }));
 };
 
@@ -417,7 +423,24 @@ document.querySelectorAll(".resume-select-wrap select").forEach((select) => {
   menu.className = "resume-select-menu";
 
   const setTriggerText = () => {
-    trigger.textContent = select.options[select.selectedIndex]?.text || select.options[0]?.text || "";
+    if (!select.multiple) {
+      trigger.textContent = select.options[select.selectedIndex]?.text || select.options[0]?.text || "";
+      return;
+    }
+
+    const selectedOptions = Array.from(select.selectedOptions).filter((option) => option.value !== "");
+    trigger.replaceChildren();
+    if (!selectedOptions.length) {
+      trigger.textContent = select.dataset.placeholder || "Tanlang";
+      return;
+    }
+
+    selectedOptions.forEach((option) => {
+      const chip = document.createElement("span");
+      chip.className = "resume-select-chip";
+      chip.textContent = option.text;
+      trigger.appendChild(chip);
+    });
   };
 
   select.addEventListener("change", setTriggerText);
@@ -462,12 +485,19 @@ document.querySelectorAll(".resume-select-wrap select").forEach((select) => {
     }
 
     item.addEventListener("click", () => {
-      select.value = option.value;
+      if (select.multiple) {
+        option.selected = !option.selected;
+        item.classList.toggle("active", option.selected);
+      } else {
+        select.value = option.value;
+      }
       select.dispatchEvent(new Event("change", { bubbles: true }));
-      menu.querySelectorAll(".resume-select-option").forEach((button) => button.classList.remove("active"));
-      item.classList.add("active");
+      if (!select.multiple) {
+        menu.querySelectorAll(".resume-select-option").forEach((button) => button.classList.remove("active"));
+        item.classList.add("active");
+      }
       setTriggerText();
-      closeSelect();
+      if (!select.multiple) closeSelect();
     });
 
     menu.appendChild(item);

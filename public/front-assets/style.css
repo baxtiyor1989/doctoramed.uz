@@ -5619,6 +5619,33 @@ a {
   box-shadow: 0 0 0 4px rgba(184, 31, 43, .08), inset 0 0 0 1px rgba(255,255,255,.8);
 }
 
+.resume-select-trigger:has(.resume-select-chip) {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.resume-select-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: rgba(184, 31, 43, .1);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.resume-select-option.active::after {
+  content: "✓";
+  float: right;
+  margin-left: 12px;
+  color: var(--primary);
+  font-weight: 900;
+}
+
 .resume-select-menu {
   position: absolute;
   left: 0;

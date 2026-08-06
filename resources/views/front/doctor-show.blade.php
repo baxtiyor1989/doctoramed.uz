@@ -4,6 +4,9 @@
     'ru' => ['home' => 'Главная', 'services' => 'Услуги', 'doctors' => 'Врачи', 'about' => 'О клинике', 'contact' => 'Контакты', 'appointment' => 'Записаться', 'back' => 'Все врачи', 'profile' => 'Профиль врача', 'experience' => 'Опыт', 'category' => 'Категория', 'education' => 'Образование и квалификация', 'schedule' => 'График работы', 'about_doctor' => 'О враче', 'related' => 'Другие специалисты', 'details' => 'Подробнее', 'clinic' => 'Клиника', 'team' => 'Наша команда', 'menu' => 'Меню', 'close' => 'Закрыть', 'form_title' => 'Запись на прием', 'name' => 'Имя и фамилия', 'birth_date' => 'Дата рождения', 'region' => 'Область', 'region_placeholder' => 'Выберите область', 'district' => 'Район', 'district_placeholder' => 'Выберите район', 'phone' => 'Телефон', 'type' => 'К кому записаться или какое обследование', 'type_placeholder' => 'Выберите направление', 'submit' => 'Отправить'],
     'en' => ['home' => 'Home', 'services' => 'Services', 'doctors' => 'Doctors', 'about' => 'About clinic', 'contact' => 'Contact', 'appointment' => 'Book appointment', 'back' => 'All doctors', 'profile' => 'Doctor profile', 'experience' => 'Experience', 'category' => 'Category', 'education' => 'Education and qualifications', 'schedule' => 'Work schedule', 'about_doctor' => 'About the doctor', 'related' => 'Other specialists', 'details' => 'Details', 'clinic' => 'Clinic', 'team' => 'Our team', 'menu' => 'Menu', 'close' => 'Close', 'form_title' => 'Book appointment', 'name' => 'Full name', 'birth_date' => 'Date of birth', 'region' => 'Region', 'region_placeholder' => 'Select a region', 'district' => 'District', 'district_placeholder' => 'Select a district', 'phone' => 'Phone number', 'type' => 'Doctor or examination', 'type_placeholder' => 'Select a direction', 'submit' => 'Submit'],
   ][$locale] ?? [];
+  $ui['last_name'] = ['uz' => 'Familiya', 'ru' => 'Фамилия', 'en' => 'Last name'][$locale] ?? 'Familiya';
+  $ui['first_name'] = ['uz' => 'Ism', 'ru' => 'Имя', 'en' => 'First name'][$locale] ?? 'Ism';
+  $ui['type'] = ['uz' => 'Tekshiruvlar', 'ru' => 'Обследования', 'en' => 'Examinations'][$locale] ?? 'Tekshiruvlar';
   $homeUrl = $locale === 'uz' ? route('front.home') : route('front.locale', $locale);
 @endphp
 <!DOCTYPE html>
@@ -98,22 +101,22 @@
 
       <form method="POST" action="{{ route('appointment-applications.store') }}" class="resume-form">
         @csrf
-        <label><span>{{ $ui['name'] }}</span><input type="text" name="appointment_full_name" value="{{ old('appointment_full_name') }}" data-uppercase-input required>@error('appointment_full_name')<small>{{ $message }}</small>@enderror</label>
+        <label><span>{{ $ui['last_name'] }}</span><input type="text" name="appointment_last_name" value="{{ old('appointment_last_name') }}" data-uppercase-input required>@error('appointment_last_name')<small>{{ $message }}</small>@enderror</label>
+        <label><span>{{ $ui['first_name'] }}</span><input type="text" name="appointment_first_name" value="{{ old('appointment_first_name') }}" data-uppercase-input required>@error('appointment_first_name')<small>{{ $message }}</small>@enderror</label>
         <label><span>{{ $ui['birth_date'] }}</span><input type="date" name="appointment_birth_date" value="{{ old('appointment_birth_date') }}" required>@error('appointment_birth_date')<small>{{ $message }}</small>@enderror</label>
-        @include('front.partials.appointment-location-fields', ['regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'], 'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder']])
         <label><span>{{ $ui['phone'] }}</span><input type="tel" name="appointment_phone" value="{{ old('appointment_phone') }}" placeholder="+998 __ ___ __ __" inputmode="tel" data-phone-mask required>@error('appointment_phone')<small>{{ $message }}</small>@enderror</label>
+        @include('front.partials.appointment-location-fields', ['regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'], 'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder']])
         <label class="resume-form-wide">
           <span>{{ $ui['type'] }}</span>
           <span class="resume-select-wrap">
-            <select name="appointment_type" required data-appointment-type-select>
-              <option value="">{{ $ui['type_placeholder'] }}</option>
+            <select name="appointment_types[]" multiple required data-appointment-type-select data-placeholder="{{ ['uz' => 'Tekshiruvlarni tanlang', 'ru' => 'Выберите обследования', 'en' => 'Select examinations'][$locale] }}">
               @foreach ($appointmentTypes as $appointmentType)
                 @php($appointmentTypeTitle = $appointmentType->tr('title', $locale))
-                <option value="{{ $appointmentTypeTitle }}" @selected(old('appointment_type') === $appointmentTypeTitle)>{{ $appointmentTypeTitle }}</option>
+                <option value="{{ $appointmentTypeTitle }}" @selected(in_array($appointmentTypeTitle, (array) old('appointment_types', []), true))>{{ $appointmentTypeTitle }}</option>
               @endforeach
             </select>
           </span>
-          @error('appointment_type')<small>{{ $message }}</small>@enderror
+          @error('appointment_types')<small>{{ $message }}</small>@enderror
         </label>
         <button type="submit" class="btn btn-primary resume-form-wide">{{ $ui['submit'] }}</button>
       </form>

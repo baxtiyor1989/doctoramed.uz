@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['full_name', 'birth_date', 'region_id', 'district_id', 'region_district', 'phone', 'appointment_type'])]
+#[Fillable(['last_name', 'first_name', 'full_name', 'birth_date', 'region_id', 'district_id', 'region_district', 'phone', 'appointment_type'])]
 class AppointmentApplication extends Model
 {
     protected function casts(): array
