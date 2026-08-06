@@ -21,6 +21,7 @@
       'appointment_last_name' => 'Familiya', 'appointment_first_name' => 'Ism',
       'appointment_region' => 'Viloyati, tumani',
       'region' => 'Viloyat', 'region_placeholder' => 'Viloyatni tanlang', 'district' => 'Tuman', 'district_placeholder' => 'Tumanni tanlang',
+      'appointment_address' => 'Manzil (ixtiyoriy)', 'appointment_address_placeholder' => 'Ko‘cha, uy va xonadon',
       'appointment_type' => 'Tekshiruvlar',
       'appointment_type_placeholder' => 'Tekshiruvlarni tanlang',
       'appointment_status_title' => 'Qabulga yozilish',
@@ -47,6 +48,7 @@
       'appointment_last_name' => 'Фамилия', 'appointment_first_name' => 'Имя',
       'appointment_region' => 'Область, район',
       'region' => 'Область', 'region_placeholder' => 'Выберите область', 'district' => 'Район', 'district_placeholder' => 'Выберите район',
+      'appointment_address' => 'Адрес (необязательно)', 'appointment_address_placeholder' => 'Улица, дом и квартира',
       'appointment_type' => 'Обследования',
       'appointment_type_placeholder' => 'Выберите обследования',
       'appointment_status_title' => 'Запись на прием',
@@ -73,6 +75,7 @@
       'appointment_last_name' => 'Last name', 'appointment_first_name' => 'First name',
       'appointment_region' => 'Region, district',
       'region' => 'Region', 'region_placeholder' => 'Select a region', 'district' => 'District', 'district_placeholder' => 'Select a district',
+      'appointment_address' => 'Address (optional)', 'appointment_address_placeholder' => 'Street, house and apartment',
       'appointment_type' => 'Examinations',
       'appointment_type_placeholder' => 'Select examinations',
       'appointment_status_title' => 'Book appointment',
@@ -606,6 +609,7 @@
           'regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'],
           'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder'],
         ])
+        <label class="resume-form-wide"><span>{{ $ui['appointment_address'] }}</span><input type="text" name="appointment_address" value="{{ old('appointment_address') }}" placeholder="{{ $ui['appointment_address_placeholder'] }}" maxlength="500">@error('appointment_address')<small>{{ $message }}</small>@enderror</label>
         <label class="resume-form-wide">
           <span>{{ $ui['appointment_type'] }}</span>
           <span class="resume-multi-select-wrap">

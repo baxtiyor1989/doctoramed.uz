@@ -10,6 +10,8 @@
   $ui['captcha_label'] = ['uz' => 'Tasdiqlash kodi', 'ru' => 'Код подтверждения', 'en' => 'Verification code'][$locale] ?? 'Tasdiqlash kodi';
   $ui['captcha_placeholder'] = ['uz' => 'Rasmdagi 5 ta raqam', 'ru' => '5 цифр с картинки', 'en' => 'Enter the 5 digits'][$locale] ?? 'Rasmdagi 5 ta raqam';
   $ui['captcha_refresh'] = ['uz' => 'Kodni yangilash', 'ru' => 'Обновить код', 'en' => 'Refresh code'][$locale] ?? 'Kodni yangilash';
+  $ui['address'] = ['uz' => 'Manzil (ixtiyoriy)', 'ru' => 'Адрес (необязательно)', 'en' => 'Address (optional)'][$locale] ?? 'Manzil (ixtiyoriy)';
+  $ui['address_placeholder'] = ['uz' => 'Ko‘cha, uy va xonadon', 'ru' => 'Улица, дом и квартира', 'en' => 'Street, house and apartment'][$locale] ?? 'Ko‘cha, uy va xonadon';
   $homeUrl = $locale === 'uz' ? route('front.home') : route('front.locale', $locale);
 @endphp
 <!DOCTYPE html>
@@ -110,6 +112,7 @@
         <label><span>{{ $ui['birth_date'] }}</span><input type="date" name="appointment_birth_date" value="{{ old('appointment_birth_date') }}" required>@error('appointment_birth_date')<small>{{ $message }}</small>@enderror</label>
         <label><span>{{ $ui['phone'] }}</span><input type="tel" name="appointment_phone" value="{{ old('appointment_phone') }}" placeholder="+998 __ ___ __ __" inputmode="tel" data-phone-mask required>@error('appointment_phone')<small>{{ $message }}</small>@enderror</label>
         @include('front.partials.appointment-location-fields', ['regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'], 'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder']])
+        <label class="resume-form-wide"><span>{{ $ui['address'] }}</span><input type="text" name="appointment_address" value="{{ old('appointment_address') }}" placeholder="{{ $ui['address_placeholder'] }}" maxlength="500">@error('appointment_address')<small>{{ $message }}</small>@enderror</label>
         <label class="resume-form-wide">
           <span>{{ $ui['type'] }}</span>
           <span class="resume-multi-select-wrap">

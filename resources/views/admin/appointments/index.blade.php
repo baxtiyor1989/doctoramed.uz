@@ -26,7 +26,10 @@
                                     @if (!$item->viewed_at)<span class="badge bg-danger ms-1">Yangi</span>@endif
                                 </td>
                                 <td>{{ optional($item->birth_date)->format('d.m.Y') }}</td>
-                                <td>{{ $item->region_district }}</td>
+                                <td>
+                                    <div>{{ $item->region_district }}</div>
+                                    @if ($item->address)<small class="text-muted">{{ $item->address }}</small>@endif
+                                </td>
                                 <td><a href="tel:{{ preg_replace('/\D+/', '', $item->phone) }}">{{ $item->phone }}</a></td>
                                 <td>{{ $item->appointment_type }}</td>
                                 <td>{{ $item->created_at->format('d.m.Y H:i') }}</td>
