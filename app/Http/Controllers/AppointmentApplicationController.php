@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class AppointmentApplicationController extends Controller
@@ -36,7 +37,21 @@ class AppointmentApplicationController extends Controller
             'appointment_phone' => ['required', 'regex:/^\+998\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/'],
             'appointment_types' => ['required', 'array', 'min:1'],
             'appointment_types.*' => ['required', 'string', 'max:255', 'distinct'],
+            'appointment_captcha' => ['required', 'digits:5'],
         ]);
+
+        $captcha = $data['appointment_captcha'];
+        $captchaIsValid = collect($request->session()->get('appointment_captcha_codes', []))
+            ->filter(fn (array $item) => ($item['expires_at'] ?? 0) >= now()->timestamp)
+            ->contains(fn (array $item) => hash_equals((string) $item['code'], $captcha));
+
+        if (! $captchaIsValid) {
+            throw ValidationException::withMessages([
+                'appointment_captcha' => 'Rasmdagi raqam noto‘g‘ri kiritildi.',
+            ]);
+        }
+
+        $request->session()->forget('appointment_captcha_codes');
 
         $district = filled($data['appointment_district_id'] ?? null)
             ? District::query()->find($data['appointment_district_id'])

@@ -5805,6 +5805,58 @@ a {
   grid-column: 1 / -1;
 }
 
+.appointment-captcha-row {
+  display: grid;
+  grid-template-columns: 180px 48px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.appointment-captcha-row img {
+  width: 180px;
+  height: 58px;
+  border: 1px solid rgba(184,31,43,.18);
+  border-radius: 12px;
+  object-fit: cover;
+  background: #fff7f8;
+}
+
+.appointment-captcha-row button {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  color: var(--primary);
+  background: rgba(184,31,43,.1);
+  font-size: 25px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.appointment-captcha-row button:hover {
+  color: #fff;
+  background: var(--primary);
+  transform: rotate(30deg);
+}
+
+@media (max-width: 620px) {
+  .appointment-captcha-row {
+    grid-template-columns: minmax(0, 1fr) 48px;
+  }
+
+  .appointment-captcha-row img {
+    width: 100%;
+  }
+
+  .appointment-captcha-row input {
+    grid-column: 1 / -1;
+  }
+}
+
 .resume-form .btn,
 [data-resume-open],
 .resume-form .btn:hover,

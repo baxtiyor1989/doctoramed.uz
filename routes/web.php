@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DeployController;
 use App\Http\Controllers\Admin\ResumeApplicationController as AdminResumeApplicationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AppointmentApplicationController;
+use App\Http\Controllers\AppointmentCaptchaController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ResumeApplicationController;
 use Illuminate\Http\Request;
@@ -56,6 +57,7 @@ Route::get('/{locale}', FrontController::class)
     ->name('front.locale');
 Route::post('/resume-applications', [ResumeApplicationController::class, 'store'])->name('resume-applications.store');
 Route::post('/appointment-applications', [AppointmentApplicationController::class, 'store'])->name('appointment-applications.store');
+Route::get('/appointment-captcha', AppointmentCaptchaController::class)->name('appointment.captcha');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {

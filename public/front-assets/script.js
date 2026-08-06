@@ -586,6 +586,19 @@ document.querySelectorAll("[data-phone-mask]").forEach((phoneMaskInput) => {
   });
 });
 
+document.querySelectorAll("[data-appointment-captcha-refresh]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const field = button.closest(".appointment-captcha-field");
+    const image = field?.querySelector("[data-appointment-captcha-image]");
+    const input = field?.querySelector('input[name="appointment_captcha"]');
+    if (image) image.src = `${image.src.split("?")[0]}?t=${Date.now()}`;
+    if (input) {
+      input.value = "";
+      input.focus();
+    }
+  });
+});
+
 document.querySelectorAll("[data-uppercase-input]").forEach((input) => {
   input.addEventListener("input", () => {
     const cursorPosition = input.selectionStart;

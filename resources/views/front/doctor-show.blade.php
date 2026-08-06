@@ -7,6 +7,9 @@
   $ui['last_name'] = ['uz' => 'Familiya', 'ru' => 'Фамилия', 'en' => 'Last name'][$locale] ?? 'Familiya';
   $ui['first_name'] = ['uz' => 'Ism', 'ru' => 'Имя', 'en' => 'First name'][$locale] ?? 'Ism';
   $ui['type'] = ['uz' => 'Tekshiruvlar', 'ru' => 'Обследования', 'en' => 'Examinations'][$locale] ?? 'Tekshiruvlar';
+  $ui['captcha_label'] = ['uz' => 'Tasdiqlash kodi', 'ru' => 'Код подтверждения', 'en' => 'Verification code'][$locale] ?? 'Tasdiqlash kodi';
+  $ui['captcha_placeholder'] = ['uz' => 'Rasmdagi 5 ta raqam', 'ru' => '5 цифр с картинки', 'en' => 'Enter the 5 digits'][$locale] ?? 'Rasmdagi 5 ta raqam';
+  $ui['captcha_refresh'] = ['uz' => 'Kodni yangilash', 'ru' => 'Обновить код', 'en' => 'Refresh code'][$locale] ?? 'Kodni yangilash';
   $homeUrl = $locale === 'uz' ? route('front.home') : route('front.locale', $locale);
 @endphp
 <!DOCTYPE html>
@@ -119,6 +122,7 @@
           </span>
           @error('appointment_types')<small>{{ $message }}</small>@enderror
         </label>
+        @include('front.partials.appointment-captcha', ['captchaLabel' => $ui['captcha_label'], 'captchaPlaceholder' => $ui['captcha_placeholder'], 'captchaRefreshLabel' => $ui['captcha_refresh']])
         <button type="submit" class="btn btn-primary resume-form-wide">{{ $ui['submit'] }}</button>
       </form>
     </div>

@@ -16,7 +16,7 @@ class AppointmentLocationTest extends TestCase
     {
         $region = Region::create(['title' => 'Test viloyati', 'is_active' => true]);
 
-        $response = $this->post(route('appointment-applications.store'), $this->payload($region));
+        $response = $this->withValidCaptcha()->post(route('appointment-applications.store'), $this->payload($region));
 
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas(AppointmentApplication::class, [
@@ -31,7 +31,7 @@ class AppointmentLocationTest extends TestCase
         $region = Region::create(['title' => 'Test viloyati', 'is_active' => true]);
         District::create(['region_id' => $region->id, 'title' => 'Test tumani', 'is_active' => true]);
 
-        $response = $this->from('/')->post(route('appointment-applications.store'), $this->payload($region));
+        $response = $this->withValidCaptcha()->from('/')->post(route('appointment-applications.store'), $this->payload($region));
 
         $response->assertRedirect('/');
         $response->assertSessionHasErrors('appointment_district_id');
@@ -47,6 +47,17 @@ class AppointmentLocationTest extends TestCase
             'appointment_phone' => '+998 90 123 45 67',
             'appointment_types' => ['Test yo‘nalish'],
             'appointment_locale' => 'uz',
+            'appointment_captcha' => '12345',
         ];
+    }
+
+    private function withValidCaptcha(): static
+    {
+        return $this->withSession([
+            'appointment_captcha_codes' => [[
+                'code' => '12345',
+                'expires_at' => now()->addMinute()->timestamp,
+            ]],
+        ]);
     }
 }

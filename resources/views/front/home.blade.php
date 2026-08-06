@@ -24,6 +24,7 @@
       'appointment_type' => 'Tekshiruvlar',
       'appointment_type_placeholder' => 'Tekshiruvlarni tanlang',
       'appointment_status_title' => 'Qabulga yozilish',
+      'captcha_label' => 'Tasdiqlash kodi', 'captcha_placeholder' => 'Rasmdagi 5 ta raqam', 'captcha_refresh' => 'Kodni yangilash',
       'all_doctors' => 'Barcha shifokorlar', 'clinic' => 'Klinika', 'team' => 'Bizning jamoa', 'close' => 'Yopish', 'hide' => 'Yopish', 'menu' => 'Menu', 'doctor_profile' => 'Shifokor profili', 'category' => 'Toifa', 'education' => 'Ta’lim va malaka', 'schedule' => 'Ish jadvali', 'experience_label' => 'Tajriba',
     ],
     'ru' => [
@@ -49,6 +50,7 @@
       'appointment_type' => 'Обследования',
       'appointment_type_placeholder' => 'Выберите обследования',
       'appointment_status_title' => 'Запись на прием',
+      'captcha_label' => 'Код подтверждения', 'captcha_placeholder' => '5 цифр с картинки', 'captcha_refresh' => 'Обновить код',
       'all_doctors' => 'Все врачи', 'clinic' => 'Клиника', 'team' => 'Наша команда', 'close' => 'Закрыть', 'hide' => 'Закрыть', 'menu' => 'Меню', 'doctor_profile' => 'Профиль врача', 'category' => 'Категория', 'education' => 'Образование и квалификация', 'schedule' => 'График работы', 'experience_label' => 'Опыт',
     ],
     'en' => [
@@ -74,6 +76,7 @@
       'appointment_type' => 'Examinations',
       'appointment_type_placeholder' => 'Select examinations',
       'appointment_status_title' => 'Book appointment',
+      'captcha_label' => 'Verification code', 'captcha_placeholder' => 'Enter the 5 digits', 'captcha_refresh' => 'Refresh code',
       'all_doctors' => 'All doctors', 'clinic' => 'Clinic', 'team' => 'Our team', 'close' => 'Close', 'hide' => 'Close', 'menu' => 'Menu', 'doctor_profile' => 'Doctor profile', 'category' => 'Category', 'education' => 'Education and qualifications', 'schedule' => 'Work schedule', 'experience_label' => 'Experience',
     ],
   ][$locale] ?? [];
@@ -615,6 +618,7 @@
           </span>
           @error('appointment_types')<small>{{ $message }}</small>@enderror
         </label>
+        @include('front.partials.appointment-captcha', ['captchaLabel' => $ui['captcha_label'], 'captchaPlaceholder' => $ui['captcha_placeholder'], 'captchaRefreshLabel' => $ui['captcha_refresh']])
         <button type="submit" class="btn btn-primary resume-form-wide">{{ $ui['resume_submit'] }}</button>
       </form>
     </div>
