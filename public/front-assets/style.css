@@ -4977,6 +4977,272 @@ a {
   margin-top: 20px;
 }
 
+/* Doctors directory — wide editorial cards */
+.doctors-list-section {
+  padding-top: 130px;
+  background: linear-gradient(rgba(184,31,43,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(184,31,43,.025) 1px, transparent 1px), #f8fafc;
+  background-size: 88px 88px;
+}
+
+.doctors-list-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 390px) auto;
+  gap: clamp(25px, 5vw, 75px);
+  align-items: end;
+  margin-bottom: 28px;
+  padding: 28px 0 30px;
+  overflow: visible;
+  border-bottom: 1px solid rgba(20,35,55,.13);
+  color: #25364b;
+  background: none;
+  box-shadow: none;
+  clip-path: none;
+}
+
+.doctors-list-hero::after {
+  top: auto;
+  right: 34px;
+  bottom: -2px;
+  width: 94px;
+  height: 2px;
+  border: 0;
+  background: var(--primary);
+  transform: none;
+}
+
+.doctors-list-heading > span,
+.doctors-list-hero span {
+  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: 12px;
+  letter-spacing: .1em;
+}
+
+.doctors-list-hero h1 {
+  color: #24364d;
+  font-size: clamp(36px, 4.2vw, 58px);
+}
+
+.doctors-list-hero > p {
+  margin: 0;
+  color: #75839a;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.doctors-list-hero > strong {
+  align-self: center;
+  padding: 12px 19px;
+  border: 1px solid rgba(184,31,43,.2);
+  border-radius: 999px;
+  color: var(--primary);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.doctors-list-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.doctors-list-card {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr) 78px;
+  min-height: 278px;
+  overflow: hidden;
+  border: 1px solid rgba(30,50,75,.12);
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 15px 36px rgba(28,43,61,.07);
+  clip-path: none;
+}
+
+.doctors-list-card::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: 120px;
+  width: 260px;
+  height: 120px;
+  border-top: 1px solid rgba(184,31,43,.12);
+  border-right: 1px solid rgba(184,31,43,.08);
+  transform: skewX(-32deg) rotate(-7deg);
+  pointer-events: none;
+}
+
+.doctors-list-card::after {
+  left: auto;
+  right: 67px;
+  bottom: -140px;
+  width: 270px;
+  height: 270px;
+  border: 1px solid rgba(184,31,43,.08);
+  border-radius: 50%;
+  background: transparent;
+  transform: none;
+}
+
+.doctors-list-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(184,31,43,.28);
+  box-shadow: 0 24px 54px rgba(55,32,38,.12);
+}
+
+.doctors-list-card > .doctors-list-photo {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  background: linear-gradient(145deg, #f1f3f6, #e6e9ee);
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+.doctors-list-card .doctors-list-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: 278px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.doctors-list-number {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  left: 18px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 3px;
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 10px 22px rgba(184,31,43,.28);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.doctors-list-placeholder {
+  display: grid;
+  width: 100%;
+  place-items: center;
+  color: rgba(184,31,43,.2);
+  font-size: 64px;
+}
+
+.doctors-list-card-content {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  padding: 30px clamp(28px, 5vw, 70px);
+}
+
+.doctors-list-specialty {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
+
+.doctors-list-card h2 {
+  margin: 0 0 8px;
+  color: #24364d;
+  font-size: clamp(25px, 3vw, 39px);
+  line-height: 1.12;
+  letter-spacing: -.035em;
+}
+
+.doctors-list-degree {
+  margin: 0;
+  color: #7b899e !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+.doctors-list-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 0;
+  margin: 22px 0 0;
+}
+
+.doctors-list-facts > div {
+  min-width: 180px;
+  padding: 2px 22px 2px 14px;
+  border-left: 2px solid rgba(184,31,43,.65);
+}
+
+.doctors-list-facts dt {
+  color: #929caf;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.doctors-list-facts dt i {
+  margin-right: 5px;
+  color: var(--primary);
+  font-style: normal;
+}
+
+.doctors-list-facts dd {
+  margin: 3px 0 0;
+  color: #56667d;
+  font-size: 13px;
+}
+
+.doctors-list-card > .doctors-list-link {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  width: auto;
+  height: calc(100% - 38px);
+  align-self: center;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(155deg, #9f1521, var(--primary));
+  clip-path: polygon(22px 12%, 100% 0, 100% 88%, 0 100%, 0 20%);
+}
+
+.doctors-list-card > .doctors-list-link span {
+  font-size: 30px;
+  transition: transform .25s ease;
+}
+
+.doctors-list-card:hover > .doctors-list-link span {
+  transform: translateX(5px);
+}
+
+@media (max-width: 900px) {
+  .doctors-list-hero { grid-template-columns: 1fr auto; }
+  .doctors-list-hero > p { grid-column: 1 / -1; grid-row: 2; }
+  .doctors-list-hero > strong { grid-column: 2; grid-row: 1; }
+  .doctors-list-card { grid-template-columns: 190px minmax(0, 1fr) 62px; }
+  .doctors-list-card-content { padding: 25px 28px; }
+}
+
+@media (max-width: 650px) {
+  .doctors-list-section { padding-top: 96px; }
+  .doctors-list-hero { grid-template-columns: 1fr; gap: 14px; }
+  .doctors-list-hero > p, .doctors-list-hero > strong { grid-column: 1; grid-row: auto; justify-self: start; }
+  .doctors-list-card { grid-template-columns: 1fr 54px; }
+  .doctors-list-card > .doctors-list-photo { grid-column: 1 / -1; height: 310px; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+  .doctors-list-card-content { padding: 22px 22px 28px; }
+  .doctors-list-card h2 { font-size: 27px; }
+  .doctors-list-card > .doctors-list-link { grid-column: 2; grid-row: 2; height: calc(100% - 20px); }
+  .doctors-list-facts { display: grid; }
+}
+
 .doctor-modal {
   position: fixed;
   inset: 0;
