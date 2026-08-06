@@ -5479,6 +5479,12 @@ a {
   font-weight: 800;
 }
 
+.resume-form label:has(input[required], select[required], textarea[required]) > span:first-child::after {
+  content: " *";
+  color: var(--primary);
+  font-weight: 900;
+}
+
 .resume-form input,
 .resume-form textarea {
   width: 100%;
