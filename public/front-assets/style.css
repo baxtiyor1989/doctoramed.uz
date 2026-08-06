@@ -5552,9 +5552,15 @@ a {
 }
 
 .resume-multi-select-wrap .choices {
+  position: relative;
+  z-index: 2;
   width: 100%;
   margin: 0;
   color: #1e293b;
+}
+
+.resume-multi-select-wrap .choices.is-open {
+  z-index: 100;
 }
 
 .resume-multi-select-wrap .choices__inner {
@@ -5619,6 +5625,14 @@ a {
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 22px 54px rgba(15, 23, 42, .18);
+}
+
+.resume-multi-select-wrap .choices.is-flipped .choices__list--dropdown,
+.resume-multi-select-wrap .choices.is-flipped .choices__list[aria-expanded] {
+  top: auto;
+  bottom: calc(100% + 7px);
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .resume-multi-select-wrap .choices__list--dropdown .choices__list,

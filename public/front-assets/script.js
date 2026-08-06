@@ -320,6 +320,7 @@ const appointmentTypeChoices = appointmentTypeSelect && window.Choices
   ? new Choices(appointmentTypeSelect, {
       removeItemButton: true,
       shouldSort: false,
+      position: "top",
       searchEnabled: true,
       searchPlaceholderValue: appointmentTypeSelect.dataset.placeholder || "Qidirish...",
       placeholder: true,
