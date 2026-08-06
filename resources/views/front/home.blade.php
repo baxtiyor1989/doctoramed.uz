@@ -106,6 +106,7 @@
   <title>{{ $settings->tr('site_title', $locale) }}</title>
   <link rel="icon" type="image/png" href="{{ asset('front-assets/logo.png') }}" />
   <link rel="apple-touch-icon" href="{{ asset('front-assets/logo.png') }}" />
+  <link rel="stylesheet" href="{{ asset('admin-assets/assets/libs/choices.js/public/assets/styles/choices.min.css') }}">
   <link rel="stylesheet" href="{{ asset('front-assets/style.css') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -604,7 +605,7 @@
         ])
         <label class="resume-form-wide">
           <span>{{ $ui['appointment_type'] }}</span>
-          <span class="resume-select-wrap">
+          <span class="resume-multi-select-wrap">
             <select name="appointment_types[]" multiple required data-appointment-type-select data-placeholder="{{ $ui['appointment_type_placeholder'] }}">
               @foreach ($appointmentTypes as $appointmentType)
                 @php($appointmentTypeTitle = $appointmentType->tr('title', $locale))
@@ -722,6 +723,7 @@
     </div>
   @endif
 
+  <script src="{{ asset('admin-assets/assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
   <script src="{{ asset('front-assets/script.js') }}?v={{ filemtime(public_path('front-assets/script.js')) }}"></script>
 </body>
 </html>

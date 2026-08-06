@@ -16,6 +16,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ $doctor->tr('name', $locale) }} | {{ $settings->tr('site_title', $locale) }}</title>
   <link rel="icon" type="image/png" href="{{ asset('front-assets/logo.png') }}">
+  <link rel="stylesheet" href="{{ asset('admin-assets/assets/libs/choices.js/public/assets/styles/choices.min.css') }}">
   <link rel="stylesheet" href="{{ asset('front-assets/style.css') }}">
 </head>
 <body id="top">
@@ -108,7 +109,7 @@
         @include('front.partials.appointment-location-fields', ['regionLabel' => $ui['region'], 'regionPlaceholder' => $ui['region_placeholder'], 'districtLabel' => $ui['district'], 'districtPlaceholder' => $ui['district_placeholder']])
         <label class="resume-form-wide">
           <span>{{ $ui['type'] }}</span>
-          <span class="resume-select-wrap">
+          <span class="resume-multi-select-wrap">
             <select name="appointment_types[]" multiple required data-appointment-type-select data-placeholder="{{ ['uz' => 'Tekshiruvlarni tanlang', 'ru' => 'Выберите обследования', 'en' => 'Select examinations'][$locale] }}">
               @foreach ($appointmentTypes as $appointmentType)
                 @php($appointmentTypeTitle = $appointmentType->tr('title', $locale))
@@ -124,6 +125,7 @@
   </div>
 
   @include('front.partials.footer')
+  <script src="{{ asset('admin-assets/assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
   <script src="{{ asset('front-assets/script.js') }}?v={{ filemtime(public_path('front-assets/script.js')) }}"></script>
 </body>
 </html>

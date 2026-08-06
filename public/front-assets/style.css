@@ -5546,6 +5546,86 @@ a {
   box-shadow: 0 0 0 4px rgba(184, 31, 43, .08), inset 0 0 0 1px rgba(255,255,255,.8);
 }
 
+.resume-multi-select-wrap {
+  display: block;
+  min-width: 0;
+}
+
+.resume-multi-select-wrap .choices {
+  width: 100%;
+  margin: 0;
+  color: #1e293b;
+}
+
+.resume-multi-select-wrap .choices__inner {
+  min-height: 50px;
+  padding: 7px 42px 4px 10px;
+  border: 1px solid rgba(184, 31, 43, .22);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(183, 33, 45, .08), rgba(183, 33, 45, .02));
+  font: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.72);
+}
+
+.resume-multi-select-wrap .is-focused .choices__inner,
+.resume-multi-select-wrap .is-open .choices__inner {
+  border-color: rgba(184, 31, 43, .48);
+  box-shadow: 0 0 0 4px rgba(184, 31, 43, .08);
+}
+
+.resume-multi-select-wrap .choices__list--multiple {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.resume-multi-select-wrap .choices__list--multiple .choices__item {
+  margin: 0;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--primary);
+  background: rgba(184, 31, 43, .1);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.resume-multi-select-wrap .choices__button {
+  margin-left: 7px;
+  border-left-color: rgba(184,31,43,.25);
+}
+
+.resume-multi-select-wrap .choices__input {
+  min-width: 130px;
+  margin: 0;
+  padding: 7px 5px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+}
+
+.resume-multi-select-wrap .choices__list--dropdown,
+.resume-multi-select-wrap .choices__list[aria-expanded] {
+  z-index: 5000;
+  margin-top: 7px;
+  overflow: hidden;
+  border: 1px solid rgba(184, 31, 43, .16);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 22px 54px rgba(15, 23, 42, .18);
+}
+
+.resume-multi-select-wrap .choices__list--dropdown .choices__list,
+.resume-multi-select-wrap .choices__list[aria-expanded] .choices__list {
+  max-height: 220px;
+}
+
+.resume-multi-select-wrap .choices__list--dropdown .choices__item--selectable.is-highlighted,
+.resume-multi-select-wrap .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+  color: var(--primary);
+  background: rgba(184, 31, 43, .08);
+}
+
 .resume-select-wrap {
   position: relative;
   display: block;

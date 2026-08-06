@@ -315,9 +315,34 @@ const openAppointmentModal = () => {
   document.body.style.overflow = "hidden";
 };
 
+const appointmentTypeSelect = document.querySelector("[data-appointment-type-select]");
+const appointmentTypeChoices = appointmentTypeSelect && window.Choices
+  ? new Choices(appointmentTypeSelect, {
+      removeItemButton: true,
+      shouldSort: false,
+      searchEnabled: true,
+      searchPlaceholderValue: appointmentTypeSelect.dataset.placeholder || "Qidirish...",
+      placeholder: true,
+      placeholderValue: appointmentTypeSelect.dataset.placeholder || "Tanlang",
+      itemSelectText: "",
+      noResultsText: "Natija topilmadi",
+      noChoicesText: "Boshqa variant yo‘q",
+    })
+  : null;
+
 const setAppointmentType = (value) => {
   const select = document.querySelector("[data-appointment-type-select]");
   if (!select || !value) return;
+
+  if (appointmentTypeChoices) {
+    const hasChoice = Array.from(select.options).some((option) => option.value === value);
+    if (hasChoice) {
+      appointmentTypeChoices.setChoiceByValue(value);
+    } else {
+      appointmentTypeChoices.setChoices([{ value, label: value, selected: true }], "value", "label", false);
+    }
+    return;
+  }
 
   const hasOption = Array.from(select.options).some((option) => option.value === value);
   if (!hasOption) {
@@ -410,7 +435,7 @@ if (document.querySelector("#appointmentModal .resume-success, #appointmentModal
   openResumeModal();
 }
 
-document.querySelectorAll(".resume-select-wrap select").forEach((select) => {
+document.querySelectorAll(".resume-select-wrap select:not([multiple])").forEach((select) => {
   const wrapper = select.closest(".resume-select-wrap");
   const custom = document.createElement("div");
   const trigger = document.createElement("button");
