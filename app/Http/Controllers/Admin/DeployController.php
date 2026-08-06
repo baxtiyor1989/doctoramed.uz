@@ -56,9 +56,12 @@ class DeployController extends Controller
     private function authorizeAdministrator(): void
     {
         abort_unless(
-            app()->isProduction()
-            && config('deploy.enabled')
-            && in_array(request()->getHost(), config('deploy.allowed_hosts', []), true),
+            config('deploy.enabled', true)
+            && in_array(
+                request()->getHost(),
+                config('deploy.allowed_hosts', ['doctoramed.uz', 'www.doctoramed.uz']),
+                true
+            ),
             404
         );
 

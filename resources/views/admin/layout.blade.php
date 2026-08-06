@@ -168,7 +168,7 @@
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.resumes.index') }}"><i class="ri-file-user-line"></i> <span>Rezyumelar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.users.index') }}"><i class="ri-user-settings-line"></i> <span>Foydalanuvchilar</span></a></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.settings') }}"><i class="ri-settings-3-line"></i> <span>Asosiy sozlamalar</span></a></li>
-                        @if (auth()->user()->role === 'administrator' && app()->isProduction() && config('deploy.enabled') && in_array(request()->getHost(), config('deploy.allowed_hosts', []), true))
+                        @if (auth()->user()->role === 'administrator' && config('deploy.enabled', true) && in_array(request()->getHost(), config('deploy.allowed_hosts', ['doctoramed.uz', 'www.doctoramed.uz']), true))
                             <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.deploy.index') }}"><i class="ri-github-line"></i> <span>GitHub’dan yangilash</span></a></li>
                         @endif
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('front.home') }}" target="_blank" rel="noopener noreferrer"><i class="ri-global-line"></i> <span>Sayt</span></a></li>
