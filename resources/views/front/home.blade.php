@@ -132,7 +132,7 @@
 
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="#home">
+      <a class="logo" href="{{ $locale === 'uz' ? route('front.home') : route('front.locale', $locale) }}">
         <span class="header-css-logo" aria-hidden="true">
           @for ($i = 1; $i <= 17; $i++)
             <span></span>
@@ -516,7 +516,7 @@
   <footer class="footer" id="contact">
     <div class="container footer-grid">
       <div>
-        <a class="logo footer-logo" href="#home">
+        <a class="logo footer-logo" href="{{ $locale === 'uz' ? route('front.home') : route('front.locale', $locale) }}">
           <span class="footer-css-logo" aria-hidden="true">
             @for ($i = 1; $i <= 25; $i++)
               <span></span>
