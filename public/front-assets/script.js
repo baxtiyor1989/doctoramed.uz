@@ -786,16 +786,27 @@ document.querySelectorAll('[data-rating-widget]').forEach((widget) => {
   const results = widget.querySelector('[data-rating-results]');
   const message = widget.querySelector('[data-rating-message]');
   const copy = JSON.parse(widget.dataset.copy || '{}');
+  const voterStorageKey = 'doctoramed_rating_voter';
+  const votedStorageKey = 'doctoramed_service_rating_voted';
+  let voterToken = localStorage.getItem(voterStorageKey);
+  if (!voterToken) {
+    voterToken = self.crypto?.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, character => {
+      const random = Math.random() * 16 | 0;
+      return (character === 'x' ? random : (random & 3 | 8)).toString(16);
+    });
+    localStorage.setItem(voterStorageKey, voterToken);
+  }
   let state = null;
 
   const showResults = (data) => {
     state = data;
+    localStorage.setItem(votedStorageKey, '1');
     options.hidden = true;
     results.hidden = false;
     results.innerHTML = `<div class="clinic-rating-result-head"><span class="clinic-rating-average">${data.average}</span><span>/ 5 · ${data.total} ${copy.votes}</span></div>${data.results.map(row => `<div class="clinic-rating-result-row"><span>${row.score} ★</span><span class="clinic-rating-track"><span class="clinic-rating-fill" style="width:${row.percent}%"></span></span><strong>${row.percent}%</strong></div>`).join('')}`;
   };
   const load = async () => {
-    try { const response = await fetch(widget.dataset.statusUrl, {headers:{Accept:'application/json'}}); state = await response.json(); if (state.voted) showResults(state); } catch (_) {}
+    try { const response = await fetch(widget.dataset.statusUrl, {credentials:'same-origin',headers:{Accept:'application/json','X-Rating-Voter':voterToken}}); state = await response.json(); if (state.voted || localStorage.getItem(votedStorageKey) === '1') showResults(state); } catch (_) {}
   };
   trigger.addEventListener('click', () => { panel.hidden = !panel.hidden; trigger.setAttribute('aria-expanded', String(!panel.hidden)); if (!state) load(); });
   widget.querySelector('[data-rating-close]').addEventListener('click', () => { panel.hidden = true; trigger.setAttribute('aria-expanded','false'); trigger.focus(); });
@@ -809,7 +820,7 @@ document.querySelectorAll('[data-rating-widget]').forEach((widget) => {
     const button = event.target.closest('[data-rating-score]'); if (!button) return;
     options.querySelectorAll('button').forEach(item => item.disabled = true); message.textContent = '';
     try {
-      const response = await fetch(widget.dataset.submitUrl, {method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':widget.dataset.csrf},body:JSON.stringify({score:Number(button.dataset.ratingScore),locale:widget.dataset.locale})});
+      const response = await fetch(widget.dataset.submitUrl, {method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':widget.dataset.csrf,'X-Rating-Voter':voterToken},body:JSON.stringify({score:Number(button.dataset.ratingScore),locale:widget.dataset.locale})});
       const data = await response.json(); if (!response.ok && response.status !== 409) throw new Error(); showResults(data); message.textContent = data.message || copy.thanks;
     } catch (_) { message.textContent = 'Xatolik yuz berdi. Qayta urinib ko‘ring.'; options.querySelectorAll('button').forEach(item => item.disabled = false); }
   });

@@ -71,8 +71,17 @@ class ServiceRatingController extends Controller
 
     private function voterToken(Request $request): array
     {
-        $token = $request->cookie(self::COOKIE);
-        return $token ? [$token, false] : [(string) Str::uuid(), true];
+        $cookieToken = $request->cookie(self::COOKIE);
+        if ($cookieToken) {
+            return [$cookieToken, false];
+        }
+
+        $browserToken = (string) $request->header('X-Rating-Voter', '');
+        if (Str::isUuid($browserToken)) {
+            return [$browserToken, true];
+        }
+
+        return [(string) Str::uuid(), true];
     }
 
     private function attachCookie(JsonResponse $response, string $token, Request $request): JsonResponse
