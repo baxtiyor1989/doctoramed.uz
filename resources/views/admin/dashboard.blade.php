@@ -28,6 +28,26 @@
             z-index: 1;
         }
 
+        .dashboard-rating-summary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 13px;
+            border: 1px solid rgba(255, 255, 255, .25);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .14);
+            color: #fff;
+            text-decoration: none;
+            backdrop-filter: blur(8px);
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .dashboard-rating-summary:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .23);
+            transform: translateY(-2px);
+        }
+
         .dashboard-card {
             border: 0;
             border-radius: 16px;
@@ -165,19 +185,26 @@
                 <div class="col-lg-4 text-lg-end">
                     <div class="fs-13 text-white-75 mb-2">Bugungi sana</div>
                     <div class="fs-4 fw-semibold">{{ now()->format('d.m.Y') }}</div>
-                    <a href="{{ route('front.home') }}" class="btn btn-light btn-sm mt-3" target="_blank" rel="noopener noreferrer">
-                        <i class="ri-global-line align-middle me-1"></i> Saytga o‘tish
-                    </a>
+                    <div class="d-flex flex-wrap justify-content-lg-end gap-2 mt-3">
+                        <a href="{{ route('admin.ratings.index') }}" class="dashboard-rating-summary">
+                            <i class="ri-star-fill text-warning fs-18"></i>
+                            <strong>{{ number_format($ratingAverage, 1) }}</strong>
+                            <span class="text-white-75">{{ $ratingTotal }} ta ovoz</span>
+                        </a>
+                        <a href="{{ route('front.home') }}" class="btn btn-light btn-sm d-inline-flex align-items-center" target="_blank" rel="noopener noreferrer">
+                            <i class="ri-global-line align-middle me-1"></i> Saytga o‘tish
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row g-3 mb-4">
         @foreach ($requestCards as $card)
-            <div class="col-xl-3 col-md-6">
-                <a href="{{ $card['route'] }}" class="text-decoration-none">
-                    <div class="card dashboard-stat">
+            <div class="col-xl-2 col-lg-4 col-md-6">
+                <a href="{{ $card['route'] }}" class="text-decoration-none d-block h-100">
+                    <div class="card dashboard-stat h-100 mb-0">
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
@@ -198,9 +225,9 @@
         @endforeach
 
         @foreach ($contentCards as $card)
-            <div class="col-xl-3 col-md-6">
-                <a href="{{ $card['route'] }}" class="text-decoration-none">
-                    <div class="card dashboard-stat">
+            <div class="col-xl-2 col-lg-4 col-md-6">
+                <a href="{{ $card['route'] }}" class="text-decoration-none d-block h-100">
+                    <div class="card dashboard-stat h-100 mb-0">
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>

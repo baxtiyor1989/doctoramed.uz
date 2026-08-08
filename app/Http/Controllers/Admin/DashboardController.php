@@ -9,12 +9,17 @@ use App\Models\Doctor;
 use App\Models\Partner;
 use App\Models\ResumeApplication;
 use App\Models\Service;
+use App\Models\ServiceRating;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
     public function __invoke(): View
     {
+        $ratingSummary = ServiceRating::query()
+            ->selectRaw('COUNT(*) as total, COALESCE(AVG(score), 0) as average')
+            ->first();
+
         $contentCards = [
             ['label' => 'Xizmatlar', 'value' => Service::count(), 'route' => route('admin.content.index', 'services'), 'icon' => 'ri-service-line', 'color' => 'success'],
             ['label' => 'Shifokorlar', 'value' => Doctor::count(), 'route' => route('admin.content.index', 'doctors'), 'icon' => 'ri-user-heart-line', 'color' => 'danger'],
@@ -40,6 +45,8 @@ class DashboardController extends Controller
             'maxMonthly' => $maxMonthly,
             'latestAppointments' => AppointmentApplication::query()->latest()->limit(6)->get(),
             'latestResumes' => ResumeApplication::query()->latest()->limit(6)->get(),
+            'ratingTotal' => (int) $ratingSummary->total,
+            'ratingAverage' => round((float) $ratingSummary->average, 1),
         ]);
     }
 
