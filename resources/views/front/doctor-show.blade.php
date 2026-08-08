@@ -135,6 +135,7 @@
   </div>
 
   @include('front.partials.footer')
+  @include('front.partials.service-rating')
   <script src="{{ asset('admin-assets/assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
   <script src="{{ asset('front-assets/script.js') }}?v={{ filemtime(public_path('front-assets/script.js')) }}"></script>
 </body>

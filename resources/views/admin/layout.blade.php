@@ -183,6 +183,7 @@
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span>Menu</span></li>
                         <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.dashboard') }}"><i class="ri-dashboard-2-line"></i> <span>Dashboard</span></a></li>
+                        <li class="nav-item"><a class="nav-link menu-link" href="{{ route('admin.ratings.index') }}"><i class="ri-star-smile-line"></i> <span>Xizmatlar bahosi</span></a></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ route('admin.appointments.index') }}">
                                 <i class="ri-calendar-check-line"></i> <span>Qabul so‘rovlari</span>

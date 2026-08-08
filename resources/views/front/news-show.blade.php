@@ -219,6 +219,7 @@
       restartGallery();
     })();
   </script>
+  @include('front.partials.service-rating')
   <script src="{{ asset('front-assets/script.js') }}"></script>
 </body>
 </html>

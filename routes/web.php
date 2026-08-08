@@ -6,12 +6,14 @@ use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DeployController;
 use App\Http\Controllers\Admin\ResumeApplicationController as AdminResumeApplicationController;
+use App\Http\Controllers\Admin\ServiceRatingController as AdminServiceRatingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AppointmentApplicationController;
 use App\Http\Controllers\AppointmentCaptchaController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ResumeApplicationController;
 use App\Http\Controllers\ResumeCaptchaController;
+use App\Http\Controllers\ServiceRatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -60,6 +62,8 @@ Route::post('/resume-applications', [ResumeApplicationController::class, 'store'
 Route::get('/resume-captcha', ResumeCaptchaController::class)->name('resume.captcha');
 Route::post('/appointment-applications', [AppointmentApplicationController::class, 'store'])->name('appointment-applications.store');
 Route::get('/appointment-captcha', AppointmentCaptchaController::class)->name('appointment.captcha');
+Route::get('/service-ratings', [ServiceRatingController::class, 'status'])->name('service-ratings.status');
+Route::post('/service-ratings', [ServiceRatingController::class, 'store'])->middleware('throttle:10,1')->name('service-ratings.store');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -80,6 +84,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/resumes', [AdminResumeApplicationController::class, 'index'])->name('resumes.index');
         Route::delete('/resumes/{resume}', [AdminResumeApplicationController::class, 'destroy'])->name('resumes.destroy');
         Route::get('/appointments', [AdminAppointmentApplicationController::class, 'index'])->name('appointments.index');
+        Route::get('/service-ratings', [AdminServiceRatingController::class, 'index'])->name('ratings.index');
         Route::delete('/appointments/{appointment}', [AdminAppointmentApplicationController::class, 'destroy'])->name('appointments.destroy');
         Route::resource('users', UserController::class)->except(['show']);
         Route::get('/content/{resource}', [ContentController::class, 'index'])->name('content.index');
