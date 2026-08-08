@@ -11,8 +11,6 @@
   </button>
   <section class="clinic-rating-panel" role="dialog" aria-modal="false" aria-labelledby="clinicRatingTitle" hidden>
     <button class="clinic-rating-close" type="button" aria-label="{{ $ratingText['close'] }}" data-rating-close>×</button>
-    <div class="clinic-rating-mark">✚</div>
-    <p class="clinic-rating-kicker">Doctor A Med</p>
     <h2 id="clinicRatingTitle">{{ $ratingText['question'] }}</h2>
     <p class="clinic-rating-subtitle">{{ $ratingText['hint'] }}</p>
     <div class="clinic-rating-options" data-rating-options>

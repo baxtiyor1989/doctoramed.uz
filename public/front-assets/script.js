@@ -799,6 +799,12 @@ document.querySelectorAll('[data-rating-widget]').forEach((widget) => {
   };
   trigger.addEventListener('click', () => { panel.hidden = !panel.hidden; trigger.setAttribute('aria-expanded', String(!panel.hidden)); if (!state) load(); });
   widget.querySelector('[data-rating-close]').addEventListener('click', () => { panel.hidden = true; trigger.setAttribute('aria-expanded','false'); trigger.focus(); });
+  document.addEventListener('pointerdown', event => {
+    if (!panel.hidden && !widget.contains(event.target)) {
+      panel.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  });
   options.addEventListener('click', async (event) => {
     const button = event.target.closest('[data-rating-score]'); if (!button) return;
     options.querySelectorAll('button').forEach(item => item.disabled = true); message.textContent = '';
