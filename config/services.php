@@ -46,4 +46,10 @@ return [
         'appointment_type_field_id' => env('AMOCRM_APPOINTMENT_TYPE_FIELD_ID'),
     ],
 
+    'telegram_appointments' => [
+        'enabled' => env('TELEGRAM_APPOINTMENTS_ENABLED', false),
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_APPOINTMENT_CHAT_ID'),
+    ],
+
 ];

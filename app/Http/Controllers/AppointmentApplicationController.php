@@ -6,6 +6,7 @@ use App\Models\AppointmentApplication;
 use App\Models\District;
 use App\Models\Region;
 use App\Services\AmoCrmService;
+use App\Services\TelegramAppointmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,11 @@ use Throwable;
 
 class AppointmentApplicationController extends Controller
 {
-    public function store(Request $request, AmoCrmService $amoCrm): RedirectResponse
+    public function store(
+        Request $request,
+        AmoCrmService $amoCrm,
+        TelegramAppointmentService $telegram,
+    ): RedirectResponse
     {
         $region = Region::query()
             ->where('is_active', true)
@@ -86,6 +91,15 @@ class AppointmentApplicationController extends Controller
             $amoCrm->sendAppointment($application);
         } catch (Throwable $exception) {
             Log::error('Qabul so‘rovini amoCRM ga yuborib bo‘lmadi.', [
+                'appointment_application_id' => $application->id,
+                'exception' => $exception,
+            ]);
+        }
+
+        try {
+            $telegram->send($application);
+        } catch (Throwable $exception) {
+            Log::error('Qabul so‘rovini Telegram botga yuborib bo‘lmadi.', [
                 'appointment_application_id' => $application->id,
                 'exception' => $exception,
             ]);
